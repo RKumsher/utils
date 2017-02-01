@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.*;
 
+import java.util.EnumSet;
+
 import org.junit.Test;
 
 public class RandomEnumUtilsTest {
@@ -38,5 +40,29 @@ public class RandomEnumUtilsTest {
   @Test
   public void random_ReturnsElementFromGivenEnumClass() {
     assertThat(random(EnumWithTwoElements.class), isIn(EnumWithTwoElements.values()));
+  }
+
+  @Test
+  public void random_WithExcludes_ReturnsElementFromGivenEnumClassNotInExcludes() {
+    assertThat(
+        random(EnumWithTwoElements.class, EnumWithTwoElements.FIRST_ELEMENT),
+        sameInstance(EnumWithTwoElements.SECOND_ELEMENT));
+  }
+
+  @Test
+  public void random_WithExcludeCollection_ReturnsElementFromGivenEnumClassNotInExcludes() {
+    assertThat(
+        random(EnumWithTwoElements.class, EnumSet.of(EnumWithTwoElements.FIRST_ELEMENT)),
+        sameInstance(EnumWithTwoElements.SECOND_ELEMENT));
+  }
+
+  @Test
+  public void random_WhenEnumClassOnlyContainsExcludes_ThrowsIllegalArgumentException() {
+    try {
+      random(SingletonEnum.class, SingletonEnum.ONLY_ELEMENT);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      // Expected
+    }
   }
 }
