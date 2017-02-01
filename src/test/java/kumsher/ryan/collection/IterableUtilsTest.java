@@ -11,7 +11,8 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 public class IterableUtilsTest {
 
@@ -34,7 +35,31 @@ public class IterableUtilsTest {
 
   @Test
   public void randomFrom_ReturnsElementFromGivenCollection() {
-    Collection<Object> collection = Sets.newHashSet(new Object(), new Object());
+    Collection<Object> collection = Lists.newArrayList(new Object(), new Object());
     assertThat(randomFrom(collection), isIn(collection));
+  }
+
+  @Test
+  public void randomFrom_WhenCollectionOnlyContainsExcludes_ThrowsIllegalArgumentException() {
+    Collection<String> collection = Lists.newArrayList("1", "2", "2", "3");
+    try {
+      randomFrom(collection, "1", "2", "3");
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Iterable only consists of the given excludes"));
+    }
+  }
+
+  @Test
+  public void randomFrom_WithExcludes_ReturnsElementFromCollectionNotInExcludes() {
+    Collection<String> collection = Lists.newArrayList("1", "2", "2", "3");
+    assertThat(randomFrom(collection, "1", "2"), is("3"));
+  }
+
+  @Test
+  public void randomFrom_WithExcludes_WorksWithImmutableCollection() {
+    Collection<String> immutableCollection =
+        ImmutableList.<String>builder().add("1").add("2").build();
+    assertThat(randomFrom(immutableCollection, "1"), is("2"));
   }
 }
