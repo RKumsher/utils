@@ -1,4 +1,4 @@
-package kumsher.ryan;
+package kumsher.ryan.enums;
 
 import java.util.Collection;
 import java.util.EnumSet;

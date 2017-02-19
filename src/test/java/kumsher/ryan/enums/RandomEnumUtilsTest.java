@@ -1,6 +1,6 @@
-package kumsher.ryan;
+package kumsher.ryan.enums;
 
-import static kumsher.ryan.RandomEnumUtils.random;
+import static kumsher.ryan.enums.RandomEnumUtils.random;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.*;
