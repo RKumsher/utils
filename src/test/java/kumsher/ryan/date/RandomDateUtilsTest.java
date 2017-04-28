@@ -7,13 +7,16 @@ import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomFutureOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTime;
 import static org.hamcrest.Matchers.is;
@@ -23,6 +26,8 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import org.junit.Test;
@@ -30,16 +35,17 @@ import org.junit.Test;
 public class RandomDateUtilsTest {
 
   private static final Clock CLOCK = Clock.systemUTC();
+  private static final ZoneId UTC = CLOCK.getZone();
   private static final ZonedDateTime MIN_ZONED_DATE_TIME =
-      ZonedDateTime.ofInstant(MIN_INSTANT, CLOCK.getZone());
+      ZonedDateTime.ofInstant(MIN_INSTANT, UTC);
   private static final ZonedDateTime MAX_ZONED_DATE_TIME =
-      ZonedDateTime.ofInstant(MAX_INSTANT, CLOCK.getZone());
-  private static final LocalDateTime MIN_LOCAL_DATE_TIME =
-      LocalDateTime.ofInstant(MIN_INSTANT, CLOCK.getZone());
-  private static final LocalDateTime MAX_LOCAL_DATE_TIME =
-      LocalDateTime.ofInstant(MAX_INSTANT, CLOCK.getZone());
-  private static final LocalDate MIN_LOCAL_DATE = MIN_INSTANT.atZone(CLOCK.getZone()).toLocalDate();
-  private static final LocalDate MAX_LOCAL_DATE = MAX_INSTANT.atZone(CLOCK.getZone()).toLocalDate();
+      ZonedDateTime.ofInstant(MAX_INSTANT, UTC);
+  private static final OffsetDateTime MIN_OFFSET_DATE_TIME = MIN_ZONED_DATE_TIME.toOffsetDateTime();
+  private static final OffsetDateTime MAX_OFFSET_DATE_TIME = MAX_ZONED_DATE_TIME.toOffsetDateTime();
+  private static final LocalDateTime MIN_LOCAL_DATE_TIME = MIN_ZONED_DATE_TIME.toLocalDateTime();
+  private static final LocalDateTime MAX_LOCAL_DATE_TIME = MAX_ZONED_DATE_TIME.toLocalDateTime();
+  private static final LocalDate MIN_LOCAL_DATE = MIN_LOCAL_DATE_TIME.toLocalDate();
+  private static final LocalDate MAX_LOCAL_DATE = MAX_LOCAL_DATE_TIME.toLocalDate();
 
   @Test
   public void randomZonedDateTime_ReturnsZonedDateTimeBetweenMinAndMaxInstants() {
@@ -167,6 +173,135 @@ public class RandomDateUtilsTest {
   public void randomPastZonedDateTime_ReturnsZonedDateTimeBeforeCurrentSystemClock() {
     ZonedDateTime now = ZonedDateTime.now(CLOCK);
     assertThat(randomPastZonedDateTime().isBefore(now), is(true));
+  }
+
+  @Test
+  public void randomOffsetDateTime_ReturnsOffsetDateTimeBetweenMinAndMaxInstants() {
+    OffsetDateTime randomOffsetDateTime = randomOffsetDateTime();
+    assertTrue(
+        randomOffsetDateTime.isAfter(MIN_OFFSET_DATE_TIME)
+            || randomOffsetDateTime.equals(MIN_OFFSET_DATE_TIME));
+    assertTrue(randomOffsetDateTime.isBefore(MAX_OFFSET_DATE_TIME));
+  }
+
+  @Test
+  public void randomOffsetDateTime_ReturnsOffsetDateTimeBetweenGivenOffsetDateTimes() {
+    OffsetDateTime start = OffsetDateTime.now(CLOCK).minus(1, DAYS);
+    OffsetDateTime end = OffsetDateTime.now(CLOCK).plus(1, DAYS);
+
+    OffsetDateTime OffsetDateTime = randomOffsetDateTime(start, end);
+    assertTrue(OffsetDateTime.isAfter(start) || OffsetDateTime.equals(start));
+    assertTrue(OffsetDateTime.isBefore(end));
+  }
+
+  @Test
+  public void randomOffsetDateTime_WithOffsetDateTimesOneMillisecondApart_ReturnsStart() {
+    OffsetDateTime start = OffsetDateTime.now(CLOCK);
+    OffsetDateTime end = start.plus(1, MILLIS);
+    assertThat(randomOffsetDateTime(start, end), is(start));
+  }
+
+  @Test
+  public void randomOffsetDateTime_WithEqualOffsetDateTimes_ReturnsStartOffsetDateTime() {
+    OffsetDateTime OffsetDateTime = ZonedDateTime.now(CLOCK).toOffsetDateTime();
+    assertThat(randomOffsetDateTime(OffsetDateTime, OffsetDateTime), is(OffsetDateTime));
+  }
+
+  @Test
+  public void randomOffsetDateTime_WithNullEndOffsetDateTime_ThrowsIllegalArgumentException() {
+    try {
+      randomOffsetDateTime(OffsetDateTime.now(CLOCK), null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomOffsetDateTime_WithNullStartOffsetDateTime_ThrowsIllegalArgumentException() {
+    try {
+      randomOffsetDateTime(null, OffsetDateTime.now(CLOCK));
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be non-null"));
+    }
+  }
+
+  @Test
+  public void
+      randomOffsetDateTime_WithStartAfterEndOffsetDateTime_ThrowsIllegalArgumentException() {
+    OffsetDateTime start = OffsetDateTime.now(CLOCK).plus(1, DAYS);
+    OffsetDateTime end = OffsetDateTime.now(CLOCK).minus(1, DAYS);
+    try {
+      randomOffsetDateTime(start, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must come on or after start"));
+    }
+  }
+
+  @Test
+  public void randomFutureOffsetDateTime_WithAfterGiven_ReturnsOffsetDateTimeAfterGiven() {
+    OffsetDateTime after = OffsetDateTime.now(CLOCK);
+    assertThat(randomFutureOffsetDateTime(after).isAfter(after), is(true));
+  }
+
+  @Test
+  public void randomFutureOffsetDateTime_WithMaxOffsetDateTime_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureOffsetDateTime(MAX_OFFSET_DATE_TIME);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Cannot produce date after " + MAX_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomFutureOffsetDateTime_WithNullOffsetDateTime_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureOffsetDateTime(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomFutureOffsetDateTime_ReturnsOffsetDateTimeAfterCurrentSystemClock() {
+    OffsetDateTime now = OffsetDateTime.now(CLOCK);
+    assertThat(randomFutureOffsetDateTime().isAfter(now), is(true));
+  }
+
+  @Test
+  public void randomPastOffsetDateTime_WithBeforeGiven_ReturnsOffsetDateTimeBeforeGiven() {
+    OffsetDateTime before = OffsetDateTime.now(CLOCK);
+    assertThat(randomPastOffsetDateTime(before).isBefore(before), is(true));
+  }
+
+  @Test
+  public void randomPastOffsetDateTime_WithMinOffsetDateTime_ThrowsIllegalArgumentException() {
+    try {
+      randomPastOffsetDateTime(MIN_OFFSET_DATE_TIME);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomPastOffsetDateTime_WithNullOffsetDateTime_ThrowsIllegalArgumentException() {
+    try {
+      randomPastOffsetDateTime(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomPastOffsetDateTime_ReturnsOffsetDateTimeBeforeCurrentSystemClock() {
+    OffsetDateTime now = OffsetDateTime.now(CLOCK);
+    assertThat(randomPastOffsetDateTime().isBefore(now), is(true));
   }
 
   @Test

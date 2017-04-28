@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -98,6 +99,81 @@ public class RandomDateUtils {
     checkArgument(before != null, "Before must be non-null");
     Instant instant = randomPastInstant(before.toInstant());
     return ZonedDateTime.ofInstant(instant, UTC);
+  }
+
+  /**
+   * Returns a random {@link OffsetDateTime} between {@link RandomDateUtils#MIN_INSTANT} and {@link
+   * RandomDateUtils#MAX_INSTANT}.
+   *
+   * @return the random {@link OffsetDateTime}
+   */
+  public static OffsetDateTime randomOffsetDateTime() {
+    return OffsetDateTime.ofInstant(randomInstant(), UTC);
+  }
+
+  /**
+   * Returns a random {@link OffsetDateTime} within the specified range.
+   *
+   * @param startInclusive the earliest {@link OffsetDateTime} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random {@link OffsetDateTime}
+   * @throws IllegalArgumentException if startInclusive or endExclusive are null or if endExclusive
+   *     is earlier than startInclusive
+   */
+  public static OffsetDateTime randomOffsetDateTime(
+          OffsetDateTime startInclusive, OffsetDateTime endExclusive) {
+    checkArgument(startInclusive != null, "Start must be non-null");
+    checkArgument(endExclusive != null, "End must be non-null");
+    Instant instant = randomInstant(startInclusive.toInstant(), endExclusive.toInstant());
+    return OffsetDateTime.ofInstant(instant, UTC);
+  }
+
+  /**
+   * Returns a random {@link OffsetDateTime} that is after the current system clock.
+   *
+   * @return the random {@link OffsetDateTime}
+   */
+  public static OffsetDateTime randomFutureOffsetDateTime() {
+    Instant instant = randomInstant(Instant.now().plus(1, ChronoUnit.MILLIS), MAX_INSTANT);
+    return OffsetDateTime.ofInstant(instant, UTC);
+  }
+
+  /**
+   * Returns a random {@link OffsetDateTime} that is after the given {@link OffsetDateTime}.
+   *
+   * @param after the value that returned {@link OffsetDateTime} must be after
+   * @return the random {@link OffsetDateTime}
+   * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
+   *     RandomDateUtils#MAX_INSTANT}
+   */
+  public static OffsetDateTime randomFutureOffsetDateTime(OffsetDateTime after) {
+    checkArgument(after != null, "After must be non-null");
+    Instant instant = randomFutureInstant(after.toInstant());
+    return OffsetDateTime.ofInstant(instant, UTC);
+  }
+
+  /**
+   * Returns a random {@link OffsetDateTime} that is before the current system clock.
+   *
+   * @return the random {@link OffsetDateTime}
+   */
+  public static OffsetDateTime randomPastOffsetDateTime() {
+    Instant instant = randomInstant(MIN_INSTANT, Instant.now());
+    return OffsetDateTime.ofInstant(instant, UTC);
+  }
+
+  /**
+   * Returns a random {@link OffsetDateTime} that is before the given {@link OffsetDateTime}.
+   *
+   * @param before the value that returned {@link OffsetDateTime} must be before
+   * @return the random {@link OffsetDateTime}
+   * @throws IllegalArgumentException if before is null or if before is equal to or before {@link
+   *     RandomDateUtils#MIN_INSTANT}
+   */
+  public static OffsetDateTime randomPastOffsetDateTime(OffsetDateTime before) {
+    checkArgument(before != null, "Before must be non-null");
+    Instant instant = randomPastInstant(before.toInstant());
+    return OffsetDateTime.ofInstant(instant, UTC);
   }
 
   /**
