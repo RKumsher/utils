@@ -1,7 +1,6 @@
 package kumsher.ryan.date;
 
 import static com.google.common.base.Preconditions.*;
-import static java.time.temporal.ChronoUnit.HOURS;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -22,10 +21,9 @@ public class RandomDateUtils {
   private static final ZoneId UTC = ZoneId.of("UTC").normalized();
   private static final ZoneOffset UTC_OFFSET = ZoneOffset.UTC;
   static final Instant MIN_INSTANT = Instant.ofEpochMilli(0);
-  /* Limiting to just 4-digit years.  Subtracting 12 hours to cover all timezones */
+  /* December 31st, 9999.  Limiting to just 4-digit years. */
   static final Instant MAX_INSTANT =
-      Instant.ofEpochMilli(
-          LocalDate.of(10000, 1, 1).atStartOfDay(UTC).minus(12, HOURS).toInstant().toEpochMilli());
+      Instant.ofEpochMilli(LocalDate.of(9999, 12, 31).atStartOfDay(UTC).toInstant().toEpochMilli());
 
   /**
    * Returns a random {@link ZonedDateTime} between {@link RandomDateUtils#MIN_INSTANT} and {@link
@@ -177,6 +175,82 @@ public class RandomDateUtils {
     checkArgument(before != null, "Before must be non-null");
     Instant instant = randomPastInstant(before.toInstant(UTC_OFFSET));
     return LocalDateTime.ofInstant(instant, UTC);
+  }
+
+  /**
+   * Returns a random {@link LocalDate} between {@link RandomDateUtils#MIN_INSTANT} and {@link
+   * RandomDateUtils#MAX_INSTANT}.
+   *
+   * @return the random {@link LocalDate}
+   */
+  public static LocalDate randomLocalDate() {
+    return randomInstant().atZone(UTC).toLocalDate();
+  }
+
+  /**
+   * Returns a random {@link LocalDate} within the specified range.
+   *
+   * @param startInclusive the earliest {@link LocalDate} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random {@link LocalDate}
+   * @throws IllegalArgumentException if startInclusive or endExclusive are null or if endExclusive
+   *     is earlier than startInclusive
+   */
+  public static LocalDate randomLocalDate(LocalDate startInclusive, LocalDate endExclusive) {
+    checkArgument(startInclusive != null, "Start must be non-null");
+    checkArgument(endExclusive != null, "End must be non-null");
+    Instant startInstant = startInclusive.atStartOfDay().toInstant(UTC_OFFSET);
+    Instant endInstant = endExclusive.atStartOfDay().toInstant(UTC_OFFSET);
+    Instant instant = randomInstant(startInstant, endInstant);
+    return instant.atZone(UTC).toLocalDate();
+  }
+
+  /**
+   * Returns a random {@link LocalDate} that is after the current system clock.
+   *
+   * @return the random {@link LocalDate}
+   */
+  public static LocalDate randomFutureLocalDate() {
+    Instant instant = randomInstant(Instant.now().plus(1, ChronoUnit.MILLIS), MAX_INSTANT);
+    return instant.atZone(UTC).toLocalDate();
+  }
+
+  /**
+   * Returns a random {@link LocalDate} that is after the given {@link LocalDate}.
+   *
+   * @param after the value that returned {@link LocalDate} must be after
+   * @return the random {@link LocalDate}
+   * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
+   *     RandomDateUtils#MAX_INSTANT}
+   */
+  public static LocalDate randomFutureLocalDate(LocalDate after) {
+    checkArgument(after != null, "After must be non-null");
+    Instant instant = randomFutureInstant(after.atStartOfDay(UTC).toInstant());
+    return instant.atZone(UTC).toLocalDate();
+  }
+
+  /**
+   * Returns a random {@link LocalDate} that is before the current system clock.
+   *
+   * @return the random {@link LocalDate}
+   */
+  public static LocalDate randomPastLocalDate() {
+    Instant instant = randomInstant(MIN_INSTANT, Instant.now());
+    return instant.atZone(UTC).toLocalDate();
+  }
+
+  /**
+   * Returns a random {@link LocalDate} that is before the given {@link LocalDate}.
+   *
+   * @param before the value that returned {@link LocalDate} must be before
+   * @return the random {@link LocalDate}
+   * @throws IllegalArgumentException if before is null or if before is equal to or before {@link
+   *     RandomDateUtils#MIN_INSTANT}
+   */
+  public static LocalDate randomPastLocalDate(LocalDate before) {
+    checkArgument(before != null, "Before must be non-null");
+    Instant instant = randomPastInstant(before.atStartOfDay(UTC).toInstant());
+    return instant.atZone(UTC).toLocalDate();
   }
 
   /**

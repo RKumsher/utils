@@ -1,13 +1,18 @@
 package kumsher.ryan.date;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MILLIS;
 import static kumsher.ryan.date.RandomDateUtils.MAX_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
+import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomInstant;
+import static kumsher.ryan.date.RandomDateUtils.randomLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
+import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTime;
@@ -16,9 +21,9 @@ import static org.junit.Assert.*;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 
 import org.junit.Test;
 
@@ -33,6 +38,8 @@ public class RandomDateUtilsTest {
       LocalDateTime.ofInstant(MIN_INSTANT, CLOCK.getZone());
   private static final LocalDateTime MAX_LOCAL_DATE_TIME =
       LocalDateTime.ofInstant(MAX_INSTANT, CLOCK.getZone());
+  private static final LocalDate MIN_LOCAL_DATE = MIN_INSTANT.atZone(CLOCK.getZone()).toLocalDate();
+  private static final LocalDate MAX_LOCAL_DATE = MAX_INSTANT.atZone(CLOCK.getZone()).toLocalDate();
 
   @Test
   public void randomZonedDateTime_ReturnsZonedDateTimeBetweenMinAndMaxInstants() {
@@ -45,8 +52,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomZonedDateTime_ReturnsZonedDateTimeBetweenGivenZonedDateTimes() {
-    ZonedDateTime start = ZonedDateTime.now(CLOCK).minus(1, ChronoUnit.DAYS);
-    ZonedDateTime end = ZonedDateTime.now(CLOCK).plus(1, ChronoUnit.DAYS);
+    ZonedDateTime start = ZonedDateTime.now(CLOCK).minus(1, DAYS);
+    ZonedDateTime end = ZonedDateTime.now(CLOCK).plus(1, DAYS);
 
     ZonedDateTime zonedDateTime = randomZonedDateTime(start, end);
     assertTrue(zonedDateTime.isAfter(start) || zonedDateTime.equals(start));
@@ -56,7 +63,7 @@ public class RandomDateUtilsTest {
   @Test
   public void randomZonedDateTime_WithZonedDateTimesOneMillisecondApart_ReturnsStart() {
     ZonedDateTime start = ZonedDateTime.now(CLOCK);
-    ZonedDateTime end = start.plus(1, ChronoUnit.MILLIS);
+    ZonedDateTime end = start.plus(1, MILLIS);
     assertThat(randomZonedDateTime(start, end), is(start));
   }
 
@@ -88,8 +95,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomZonedDateTime_WithStartAfterEndZonedDateTime_ThrowsIllegalArgumentException() {
-    ZonedDateTime start = ZonedDateTime.now(CLOCK).plus(1, ChronoUnit.DAYS);
-    ZonedDateTime end = ZonedDateTime.now(CLOCK).minus(1, ChronoUnit.DAYS);
+    ZonedDateTime start = ZonedDateTime.now(CLOCK).plus(1, DAYS);
+    ZonedDateTime end = ZonedDateTime.now(CLOCK).minus(1, DAYS);
     try {
       randomZonedDateTime(start, end);
       fail("Should have thrown an IllegalArgumentException");
@@ -173,8 +180,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomLocalDateTime_ReturnsLocalDateTimeBetweenGivenLocalDateTimes() {
-    LocalDateTime start = LocalDateTime.now(CLOCK).minus(1, ChronoUnit.DAYS);
-    LocalDateTime end = LocalDateTime.now(CLOCK).plus(1, ChronoUnit.DAYS);
+    LocalDateTime start = LocalDateTime.now(CLOCK).minus(1, DAYS);
+    LocalDateTime end = LocalDateTime.now(CLOCK).plus(1, DAYS);
 
     LocalDateTime zonedDateTime = randomLocalDateTime(start, end);
     assertTrue(zonedDateTime.isAfter(start) || zonedDateTime.equals(start));
@@ -184,7 +191,7 @@ public class RandomDateUtilsTest {
   @Test
   public void randomLocalDateTime_WithLocalDateTimesOneMillisecondApart_ReturnsStart() {
     LocalDateTime start = LocalDateTime.now(CLOCK);
-    LocalDateTime end = start.plus(1, ChronoUnit.MILLIS);
+    LocalDateTime end = start.plus(1, MILLIS);
     assertThat(randomLocalDateTime(start, end), is(start));
   }
 
@@ -216,8 +223,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomLocalDateTime_WithStartAfterEndLocalDateTime_ThrowsIllegalArgumentException() {
-    LocalDateTime start = LocalDateTime.now(CLOCK).plus(1, ChronoUnit.DAYS);
-    LocalDateTime end = LocalDateTime.now(CLOCK).minus(1, ChronoUnit.DAYS);
+    LocalDateTime start = LocalDateTime.now(CLOCK).plus(1, DAYS);
+    LocalDateTime end = LocalDateTime.now(CLOCK).minus(1, DAYS);
     try {
       randomLocalDateTime(start, end);
       fail("Should have thrown an IllegalArgumentException");
@@ -291,6 +298,132 @@ public class RandomDateUtilsTest {
   }
 
   @Test
+  public void randomLocalDate_ReturnsLocalDateBetweenMinAndMaxInstants() {
+    LocalDate randomLocalDate = randomLocalDate();
+    assertTrue(randomLocalDate.isAfter(MIN_LOCAL_DATE) || randomLocalDate.equals(MIN_LOCAL_DATE));
+    assertTrue(randomLocalDate.isBefore(MAX_LOCAL_DATE));
+  }
+
+  @Test
+  public void randomLocalDate_ReturnsLocalDateBetweenGivenLocalDates() {
+    LocalDate start = LocalDate.now(CLOCK).minus(1, DAYS);
+    LocalDate end = LocalDate.now(CLOCK).plus(1, DAYS);
+
+    LocalDate zonedDateTime = randomLocalDate(start, end);
+    assertTrue(zonedDateTime.isAfter(start) || zonedDateTime.equals(start));
+    assertTrue(zonedDateTime.isBefore(end));
+  }
+
+  @Test
+  public void randomLocalDate_WithLocalDatesOneDayApart_ReturnsStart() {
+    LocalDate start = LocalDate.now(CLOCK);
+    LocalDate end = start.plus(1, DAYS);
+    assertThat(randomLocalDate(start, end), is(start));
+  }
+
+  @Test
+  public void randomLocalDate_WithEqualLocalDates_ReturnsStartLocalDate() {
+    LocalDate zonedDateTime = LocalDate.now(CLOCK);
+    assertThat(randomLocalDate(zonedDateTime, zonedDateTime), is(zonedDateTime));
+  }
+
+  @Test
+  public void randomLocalDate_WithNullEndLocalDate_ThrowsIllegalArgumentException() {
+    try {
+      randomLocalDate(LocalDate.now(CLOCK), null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomLocalDate_WithNullStartLocalDate_ThrowsIllegalArgumentException() {
+    try {
+      randomLocalDate(null, LocalDate.now(CLOCK));
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomLocalDate_WithStartAfterEndLocalDate_ThrowsIllegalArgumentException() {
+    LocalDate start = LocalDate.now(CLOCK).plus(1, DAYS);
+    LocalDate end = LocalDate.now(CLOCK).minus(1, DAYS);
+    try {
+      randomLocalDate(start, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must come on or after start"));
+    }
+  }
+
+  @Test
+  public void randomFutureLocalDate_WithAfterGiven_ReturnsLocalDateAfterGiven() {
+    LocalDate after = LocalDate.now(CLOCK);
+    assertThat(randomFutureLocalDate(after).isAfter(after), is(true));
+  }
+
+  @Test
+  public void randomFutureLocalDate_WithMaxLocalDate_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureLocalDate(MAX_LOCAL_DATE);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Cannot produce date after " + MAX_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomFutureLocalDate_WithNullLocalDate_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureLocalDate(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomFutureLocalDate_ReturnsLocalDateAfterCurrentSystemClock() {
+    LocalDate now = LocalDate.now(CLOCK);
+    assertThat(randomFutureLocalDate().isAfter(now), is(true));
+  }
+
+  @Test
+  public void randomPastLocalDate_WithBeforeGiven_ReturnsLocalDateBeforeGiven() {
+    LocalDate before = LocalDate.now(CLOCK);
+    assertThat(randomPastLocalDate(before).isBefore(before), is(true));
+  }
+
+  @Test
+  public void randomPastLocalDate_WithMinLocalDate_ThrowsIllegalArgumentException() {
+    try {
+      randomPastLocalDate(MIN_LOCAL_DATE);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomPastLocalDate_WithNullLocalDate_ThrowsIllegalArgumentException() {
+    try {
+      randomPastLocalDate(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomPastLocalDate_ReturnsLocalDateBeforeCurrentSystemClock() {
+    LocalDate now = LocalDate.now(CLOCK);
+    assertThat(randomPastLocalDate().isBefore(now), is(true));
+  }
+
+  @Test
   public void randomInstant_ReturnsInstantBetweenMinAndMaxInstants() {
     Instant instant = randomInstant();
     assertTrue(instant.isAfter(MIN_INSTANT) || instant.equals(MIN_INSTANT));
@@ -299,8 +432,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomInstant_ReturnsInstantBetweenGivenInstants() {
-    Instant start = Instant.now(CLOCK).minus(1, ChronoUnit.DAYS);
-    Instant end = Instant.now(CLOCK).plus(1, ChronoUnit.DAYS);
+    Instant start = Instant.now(CLOCK).minus(1, DAYS);
+    Instant end = Instant.now(CLOCK).plus(1, DAYS);
 
     Instant instant = randomInstant(start, end);
     assertTrue(instant.isAfter(start) || instant.equals(start));
@@ -310,7 +443,7 @@ public class RandomDateUtilsTest {
   @Test
   public void randomInstant_WithInstantsOneMillisecondApart_ReturnsStart() {
     Instant start = Instant.now(CLOCK);
-    Instant end = start.plus(1, ChronoUnit.MILLIS);
+    Instant end = start.plus(1, MILLIS);
     assertThat(randomInstant(start, end), is(start));
   }
 
@@ -342,8 +475,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomInstant_WithStartAfterEndInstant_ThrowsIllegalArgumentException() {
-    Instant start = Instant.now(CLOCK).plus(1, ChronoUnit.DAYS);
-    Instant end = Instant.now(CLOCK).minus(1, ChronoUnit.DAYS);
+    Instant start = Instant.now(CLOCK).plus(1, DAYS);
+    Instant end = Instant.now(CLOCK).minus(1, DAYS);
     try {
       randomInstant(start, end);
       fail("Should have thrown an IllegalArgumentException");
