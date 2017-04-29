@@ -4,6 +4,8 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static kumsher.ryan.date.RandomDateUtils.MAX_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
+import static kumsher.ryan.date.RandomDateUtils.randomFixedClock;
+import static kumsher.ryan.date.RandomDateUtils.randomFixedUtcClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDateTime;
@@ -685,6 +687,34 @@ public class RandomDateUtilsTest {
   public void randomPastInstant_ReturnsInstantBeforeCurrentSystemClock() {
     Instant now = Instant.now(CLOCK);
     assertThat(randomPastInstant().isBefore(now), is(true));
+  }
+
+  @Test
+  public void randomFixedClock_ReturnsClockWithZoneIdFromAvailableZoneIds() {
+    Clock clock = randomFixedClock();
+    assertThat(clock.getZone().getId(), isIn(ZoneOffset.getAvailableZoneIds()));
+  }
+
+  @Test
+  public void randomFixedClock_ReturnsClockWithInstantBetweenMinAndMaxInstants() {
+    Clock clock = randomFixedClock();
+    Instant instant = clock.instant();
+    assertTrue(instant.isAfter(MIN_INSTANT) || instant.equals(MIN_INSTANT));
+    assertTrue(instant.isBefore(MAX_INSTANT));
+  }
+
+  @Test
+  public void randomFixedUtcClock_ReturnsClockWithUtcZoneId() {
+    Clock clock = randomFixedUtcClock();
+    assertThat(clock.getZone(), is(UTC));
+  }
+
+  @Test
+  public void randomFixedUtcClock_ReturnsClockWithInstantBetweenMinAndMaxInstants() {
+    Clock clock = randomFixedUtcClock();
+    Instant instant = clock.instant();
+    assertTrue(instant.isAfter(MIN_INSTANT) || instant.equals(MIN_INSTANT));
+    assertTrue(instant.isBefore(MAX_INSTANT));
   }
 
   @Test

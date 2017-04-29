@@ -2,6 +2,7 @@ package kumsher.ryan.date;
 
 import static com.google.common.base.Preconditions.*;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -402,6 +403,24 @@ public class RandomDateUtils {
     checkArgument(before != null, "Before must be non-null");
     checkArgument(before.isAfter(MIN_INSTANT), "Cannot produce date before " + MIN_INSTANT);
     return randomInstant(MIN_INSTANT, before);
+  }
+
+  /**
+   * Returns a random {@link Clock} in the UTC {@link ZoneId} with a random instant in time.
+   *
+   * @return the random {@link Clock}
+   */
+  public static Clock randomFixedUtcClock() {
+    return Clock.fixed(randomInstant(), UTC);
+  }
+
+  /**
+   * Returns a random {@link Clock} in a random {@link ZoneId} with a random instant in time.
+   *
+   * @return the random {@link Clock}
+   */
+  public static Clock randomFixedClock() {
+    return Clock.fixed(randomInstant(), randomZoneId());
   }
 
   /**
