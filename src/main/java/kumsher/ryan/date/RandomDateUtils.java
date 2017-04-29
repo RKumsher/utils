@@ -3,6 +3,7 @@ package kumsher.ryan.date;
 import static com.google.common.base.Preconditions.*;
 
 import java.time.Clock;
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 import org.apache.commons.lang3.RandomUtils;
 
 import kumsher.ryan.collection.IterableUtils;
+import kumsher.ryan.enums.RandomEnumUtils;
 
 /**
  * Utility library to return random dates, e.g., {@link Instant}s, {@link ZonedDateTime}s, {@link
@@ -430,5 +432,14 @@ public class RandomDateUtils {
    */
   public static ZoneId randomZoneId() {
     return ZoneId.of(IterableUtils.randomFrom(ZoneOffset.getAvailableZoneIds()));
+  }
+
+  /**
+   * Returns a random {@link DayOfWeek}.
+   *
+   * @return the random {@link DayOfWeek}
+   */
+  public static DayOfWeek randomDayOfWeek() {
+    return RandomEnumUtils.random(DayOfWeek.class);
   }
 }

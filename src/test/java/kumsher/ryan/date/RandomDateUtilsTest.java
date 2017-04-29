@@ -4,6 +4,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static kumsher.ryan.date.RandomDateUtils.MAX_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
+import static kumsher.ryan.date.RandomDateUtils.randomDayOfWeek;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedUtcClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
@@ -27,6 +28,7 @@ import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.*;
 
 import java.time.Clock;
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -721,5 +723,10 @@ public class RandomDateUtilsTest {
   public void randomZoneId_ReturnsZoneIdFromAvailableZoneIds() {
     ZoneId zoneId = randomZoneId();
     assertThat(zoneId.getId(), isIn(ZoneOffset.getAvailableZoneIds()));
+  }
+
+  @Test
+  public void randomDayOfWeek_ReturnsRandomEnumFromDayOfWeek() {
+    assertThat(randomDayOfWeek(), isIn(DayOfWeek.values()));
   }
 }
