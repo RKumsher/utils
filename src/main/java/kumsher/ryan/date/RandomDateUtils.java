@@ -13,6 +13,8 @@ import java.time.temporal.ChronoUnit;
 
 import org.apache.commons.lang3.RandomUtils;
 
+import kumsher.ryan.collection.IterableUtils;
+
 /**
  * Utility library to return random dates, e.g., {@link Instant}s, {@link ZonedDateTime}s, {@link
  * LocalDate}s, etc..
@@ -121,7 +123,7 @@ public class RandomDateUtils {
    *     is earlier than startInclusive
    */
   public static OffsetDateTime randomOffsetDateTime(
-          OffsetDateTime startInclusive, OffsetDateTime endExclusive) {
+      OffsetDateTime startInclusive, OffsetDateTime endExclusive) {
     checkArgument(startInclusive != null, "Start must be non-null");
     checkArgument(endExclusive != null, "End must be non-null");
     Instant instant = randomInstant(startInclusive.toInstant(), endExclusive.toInstant());
@@ -400,5 +402,14 @@ public class RandomDateUtils {
     checkArgument(before != null, "Before must be non-null");
     checkArgument(before.isAfter(MIN_INSTANT), "Cannot produce date before " + MIN_INSTANT);
     return randomInstant(MIN_INSTANT, before);
+  }
+
+  /**
+   * Returns a random {@link ZoneId} from {@link ZoneOffset#getAvailableZoneIds()}.
+   *
+   * @return the random {@link ZoneId}
+   */
+  public static ZoneId randomZoneId() {
+    return ZoneId.of(IterableUtils.randomFrom(ZoneOffset.getAvailableZoneIds()));
   }
 }

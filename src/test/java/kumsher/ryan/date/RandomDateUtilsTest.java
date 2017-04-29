@@ -18,8 +18,10 @@ import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastZonedDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomZoneId;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTime;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.*;
 
 import java.time.Clock;
@@ -28,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import org.junit.Test;
@@ -682,5 +685,11 @@ public class RandomDateUtilsTest {
   public void randomPastInstant_ReturnsInstantBeforeCurrentSystemClock() {
     Instant now = Instant.now(CLOCK);
     assertThat(randomPastInstant().isBefore(now), is(true));
+  }
+
+  @Test
+  public void randomZoneId_ReturnsZoneIdFromAvailableZoneIds() {
+    ZoneId zoneId = randomZoneId();
+    assertThat(zoneId.getId(), isIn(ZoneOffset.getAvailableZoneIds()));
   }
 }
