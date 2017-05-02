@@ -15,6 +15,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomFutureZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
@@ -32,6 +33,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -728,5 +730,10 @@ public class RandomDateUtilsTest {
   @Test
   public void randomDayOfWeek_ReturnsRandomEnumFromDayOfWeek() {
     assertThat(randomDayOfWeek(), isIn(DayOfWeek.values()));
+  }
+
+  @Test
+  public void randomMonth_ReturnsRandomEnumFromMonth() {
+    assertThat(randomMonth(), isIn(Month.values()));
   }
 }

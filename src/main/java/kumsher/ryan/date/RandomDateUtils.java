@@ -7,6 +7,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -441,5 +442,14 @@ public class RandomDateUtils {
    */
   public static DayOfWeek randomDayOfWeek() {
     return RandomEnumUtils.random(DayOfWeek.class);
+  }
+
+  /**
+   * Returns a random {@link Month}.
+   *
+   * @return the random {@link Month}
+   */
+  public static Month randomMonth() {
+    return RandomEnumUtils.random(Month.class);
   }
 }
