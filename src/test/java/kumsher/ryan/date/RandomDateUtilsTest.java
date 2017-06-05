@@ -1,31 +1,40 @@
 package kumsher.ryan.date;
 
+import static java.time.Month.DECEMBER;
+import static java.time.Month.FEBRUARY;
+import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static kumsher.ryan.date.RandomDateUtils.MAX_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
+import static kumsher.ryan.date.RandomDateUtils.isLeapDay;
 import static kumsher.ryan.date.RandomDateUtils.randomDayOfWeek;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedUtcClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomFutureMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomMonth;
+import static kumsher.ryan.date.RandomDateUtils.randomMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomPastMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneId;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTime;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 
 import java.time.Clock;
@@ -34,7 +43,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.MonthDay;
 import java.time.OffsetDateTime;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -55,6 +66,8 @@ public class RandomDateUtilsTest {
   private static final LocalDateTime MAX_LOCAL_DATE_TIME = MAX_ZONED_DATE_TIME.toLocalDateTime();
   private static final LocalDate MIN_LOCAL_DATE = MIN_LOCAL_DATE_TIME.toLocalDate();
   private static final LocalDate MAX_LOCAL_DATE = MAX_LOCAL_DATE_TIME.toLocalDate();
+  private static final MonthDay MIN_MONTH_DAY = MonthDay.of(JANUARY, 1);
+  private static final MonthDay MAX_MONTH_DAY = MonthDay.of(DECEMBER, 31);
 
   @Test
   public void randomZonedDateTime_ReturnsZonedDateTimeBetweenMinAndMaxInstants() {
@@ -691,6 +704,158 @@ public class RandomDateUtilsTest {
   public void randomPastInstant_ReturnsInstantBeforeCurrentSystemClock() {
     Instant now = Instant.now(CLOCK);
     assertThat(randomPastInstant().isBefore(now), is(true));
+  }
+
+  @Test
+  public void isLeapDay_WithFebruaryTwentyNinth_ReturnsTrue() {
+    MonthDay monthDay = MonthDay.of(FEBRUARY, 29);
+    assertThat(isLeapDay(monthDay), is(true));
+  }
+
+  @Test
+  public void isLeapDay_WithNotFebruaryTwentyNinth_ReturnsFalse() {
+    MonthDay monthDay = randomMonthDay(false);
+    assertThat(isLeapDay(monthDay), is(false));
+  }
+
+  @Test
+  public void randomMonthDay_DoesNotReturnLeapDayIfCurrentYearIsNotLeapYear() {
+    MonthDay monthDay = randomMonthDay();
+    assertThat(monthDay, notNullValue());
+    if (!Year.now().isLeap()) {
+      assertThat(monthDay, not(isLeapDay(monthDay)));
+    }
+  }
+
+  @Test
+  public void randomMonthDay_ReturnsMonthDayBetweenGivenMonthDays() {
+    LocalDate baseline = randomLocalDateBetweenFirstAndLastDayOfYear();
+    MonthDay start = convertLocalDateToMonthDay(baseline.minus(1, DAYS));
+    MonthDay end = convertLocalDateToMonthDay(baseline.plus(1, DAYS));
+    MonthDay monthDay = randomMonthDay(start, end);
+    assertTrue(monthDay.isAfter(start) || monthDay.equals(start));
+    assertTrue(monthDay.isBefore(end));
+  }
+
+  private LocalDate randomLocalDateBetweenFirstAndLastDayOfYear() {
+    LocalDate secondDayOfYearh = LocalDate.of(Year.now().getValue(), JANUARY, 2);
+    LocalDate lastDayOfYearh = LocalDate.of(Year.now().getValue(), DECEMBER, 31);
+    return randomLocalDate(secondDayOfYearh, lastDayOfYearh);
+  }
+
+  private MonthDay convertLocalDateToMonthDay(LocalDate date) {
+    return MonthDay.of(date.getMonth(), date.getDayOfMonth());
+  }
+
+  @Test
+  public void randomMonthDay_WithMonthDaysOneDayApart_ReturnsStart() {
+    LocalDate baseline = randomLocalDateBetweenFirstAndLastDayOfYear();
+    MonthDay start = convertLocalDateToMonthDay(baseline);
+    MonthDay end = convertLocalDateToMonthDay(baseline.plus(1, DAYS));
+    assertThat(randomMonthDay(start, end), is(start));
+  }
+
+  @Test
+  public void randomMonthDay_WithEqualMonthDays_ReturnsStartMonthDay() {
+    MonthDay monthDay = MonthDay.now(CLOCK);
+    assertThat(randomMonthDay(monthDay, monthDay), is(monthDay));
+  }
+
+  @Test
+  public void randomMonthDay_WithNullEndMonthDay_ThrowsIllegalArgumentException() {
+    try {
+      randomMonthDay(MonthDay.now(CLOCK), null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomMonthDay_WithNullStartMonthDay_ThrowsIllegalArgumentException() {
+    try {
+      randomMonthDay(null, MonthDay.now(CLOCK));
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomMonthDay_WithStartAfterEndMonthDay_ThrowsIllegalArgumentException() {
+    LocalDate baseline = randomLocalDateBetweenFirstAndLastDayOfYear();
+    MonthDay start = convertLocalDateToMonthDay(baseline.plus(1, DAYS));
+    MonthDay end = convertLocalDateToMonthDay(baseline.minus(1, DAYS));
+    try {
+      randomMonthDay(start, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must come on or after start"));
+    }
+  }
+
+  @Test
+  public void randomFutureMonthDay_WithAfterGiven_ReturnsMonthDayAfterGiven() {
+    MonthDay after = MonthDay.now(CLOCK);
+    assertThat(randomFutureMonthDay(after).isAfter(after), is(true));
+  }
+
+  @Test
+  public void randomFutureMonthDay_WithMaxMonthDay_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureMonthDay(MAX_MONTH_DAY);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be before December 31st"));
+    }
+  }
+
+  @Test
+  public void randomFutureMonthDay_WithNullMonthDay_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureMonthDay(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomFutureMonthDay_ReturnsMonthDayAfterCurrentSystemClock() {
+    MonthDay now = MonthDay.now(CLOCK);
+    assertThat(randomFutureMonthDay().isAfter(now), is(true));
+  }
+
+  @Test
+  public void randomPastMonthDay_WithBeforeGiven_ReturnsMonthDayBeforeGiven() {
+    MonthDay before = MonthDay.now(CLOCK);
+    assertThat(randomPastMonthDay(before).isBefore(before), is(true));
+  }
+
+  @Test
+  public void randomPastMonthDay_WithMinMonthDay_ThrowsIllegalArgumentException() {
+    try {
+      randomPastMonthDay(MIN_MONTH_DAY);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be after January 1st"));
+    }
+  }
+
+  @Test
+  public void randomPastMonthDay_WithNullMonthDay_ThrowsIllegalArgumentException() {
+    try {
+      randomPastMonthDay(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomPastMonthDay_ReturnsMonthDayBeforeCurrentSystemClock() {
+    MonthDay now = MonthDay.now(CLOCK);
+    assertThat(randomPastMonthDay().isBefore(now), is(true));
   }
 
   @Test

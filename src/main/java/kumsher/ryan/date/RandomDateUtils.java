@@ -1,6 +1,10 @@
 package kumsher.ryan.date;
 
 import static com.google.common.base.Preconditions.*;
+import static java.time.Month.DECEMBER;
+import static java.time.Month.FEBRUARY;
+import static java.time.Month.JANUARY;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.time.Clock;
 import java.time.DayOfWeek;
@@ -8,7 +12,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.MonthDay;
 import java.time.OffsetDateTime;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -27,6 +33,8 @@ public class RandomDateUtils {
 
   private static final ZoneId UTC = ZoneId.of("UTC").normalized();
   private static final ZoneOffset UTC_OFFSET = ZoneOffset.UTC;
+  private static final int LEAP_YEAR = 2004;
+  static final MonthDay LEAP_DAY = MonthDay.of(FEBRUARY, 29);
   static final Instant MIN_INSTANT = Instant.ofEpochMilli(0);
   /* December 31st, 9999.  Limiting to just 4-digit years. */
   static final Instant MAX_INSTANT =
@@ -406,6 +414,190 @@ public class RandomDateUtils {
     checkArgument(before != null, "Before must be non-null");
     checkArgument(before.isAfter(MIN_INSTANT), "Cannot produce date before " + MIN_INSTANT);
     return randomInstant(MIN_INSTANT, before);
+  }
+
+  /**
+   * Returns a random {@link MonthDay} between January 1st an December 31st. Includes leap day if
+   * the current year is a leap year.
+   *
+   * @return the random {@link MonthDay}
+   */
+  public static MonthDay randomMonthDay() {
+    return randomMonthDay(Year.now().isLeap());
+  }
+
+  /**
+   * Returns a random {@link MonthDay} between January 1st an December 31st.
+   *
+   * @param includeLeapDay whether or not to include leap day
+   * @return the random {@link MonthDay}
+   */
+  public static MonthDay randomMonthDay(boolean includeLeapDay) {
+    Month month = randomMonth();
+    int dayOfMonth = RandomUtils.nextInt(1, month.maxLength() + 1);
+    MonthDay monthDay = MonthDay.of(month, dayOfMonth);
+    if (!includeLeapDay && isLeapDay(monthDay)) {
+      return randomMonthDay(false);
+    }
+    return monthDay;
+  }
+
+  /**
+   * Returns whether or not the given {@link MonthDay} is leap day (February 29th).
+   *
+   * @return whether or not the given {@link MonthDay} is leap day
+   */
+  static boolean isLeapDay(MonthDay monthDay) {
+    return LEAP_DAY.equals(monthDay);
+  }
+
+  /**
+   * Returns a random {@link MonthDay} within the specified range. Includes leap day if the current
+   * year is a leap year.
+   *
+   * @param startInclusive the earliest {@link MonthDay} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if startInclusive or endExclusive are null or if endExclusive
+   *     is earlier than startInclusive
+   */
+  public static MonthDay randomMonthDay(MonthDay startInclusive, MonthDay endExclusive) {
+    return randomMonthDay(startInclusive, endExclusive, Year.now().isLeap());
+  }
+
+  /**
+   * Returns a random {@link MonthDay} within the specified range.
+   *
+   * @param startInclusive the earliest {@link MonthDay} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @param includeLeapDay whether or not to include leap day
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if startInclusive or endExclusive are null, if endExclusive is
+   *     earlier than startInclusive, or if startInclusive or endExclusive are leap day and
+   *     includeLeapDay is false
+   */
+  public static MonthDay randomMonthDay(
+      MonthDay startInclusive, MonthDay endExclusive, boolean includeLeapDay) {
+    checkArgument(startInclusive != null, "Start must be non-null");
+    checkArgument(endExclusive != null, "End must be non-null");
+    checkArgument(
+        includeLeapDay || !startInclusive.equals(LEAP_DAY) || !endExclusive.equals(LEAP_DAY),
+        "Start and End can't both be leap day");
+    int year = includeLeapDay ? LEAP_YEAR : LEAP_YEAR - 1;
+    LocalDate start = startInclusive.atYear(year);
+    LocalDate end = endExclusive.atYear(year);
+    LocalDate localDate = randomLocalDate(start, end);
+    return MonthDay.of(localDate.getMonth(), localDate.getDayOfMonth());
+  }
+
+  /**
+   * Returns a random {@link MonthDay} that is after the current system clock. Leap day will only be
+   * include if the current year is a leap year. Includes leap day if the current year is a leap
+   * year.
+   *
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if the current day is the last day of the year
+   */
+  public static MonthDay randomFutureMonthDay() {
+    return randomFutureMonthDay(Year.now().isLeap());
+  }
+
+  /**
+   * Returns a random {@link MonthDay} that is after the current system clock. Leap day will only be
+   * include if the current year is a leap year.
+   *
+   * @param includeLeapDay whether or not to include leap day
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if the current day is the last day of the year
+   */
+  public static MonthDay randomFutureMonthDay(boolean includeLeapDay) {
+    return randomFutureMonthDay(MonthDay.now(), includeLeapDay);
+  }
+
+  /**
+   * Returns a random {@link MonthDay} that is after the given {@link MonthDay}. Includes leap day
+   * if the current year is a leap year.
+   *
+   * @param after the value that returned {@link MonthDay} must be after
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
+   *     RandomDateUtils#MAX_INSTANT}
+   */
+  public static MonthDay randomFutureMonthDay(MonthDay after) {
+    return randomFutureMonthDay(after, Year.now().isLeap());
+  }
+
+  /**
+   * Returns a random {@link MonthDay} that is after the given {@link MonthDay}.
+   *
+   * @param after the value that returned {@link MonthDay} must be after
+   * @param includeLeapDay whether or not to include leap day
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
+   *     RandomDateUtils#MAX_INSTANT}
+   */
+  public static MonthDay randomFutureMonthDay(MonthDay after, boolean includeLeapDay) {
+    checkArgument(after != null, "After must be non-null");
+    checkArgument(after.isBefore(MonthDay.of(DECEMBER, 31)), "After must be before December 31st");
+    int year = includeLeapDay ? LEAP_YEAR : LEAP_YEAR - 1;
+    LocalDate start = after.atYear(year).plus(1, DAYS);
+    LocalDate end = Year.of(year + 1).atDay(1);
+    LocalDate localDate = randomLocalDate(start, end);
+    return MonthDay.of(localDate.getMonth(), localDate.getDayOfMonth());
+  }
+
+  /**
+   * Returns a random {@link MonthDay} that is before the current system clock. Includes leap day if
+   * the current year is a leap year.
+   *
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if the current day is the first day of the year
+   */
+  public static MonthDay randomPastMonthDay() {
+    return randomPastMonthDay(Year.now().isLeap());
+  }
+
+  /**
+   * Returns a random {@link MonthDay} that is before the current system clock.
+   *
+   * @param includeLeapDay whether or not to include leap day
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if the current day is the first day of the year
+   */
+  public static MonthDay randomPastMonthDay(boolean includeLeapDay) {
+    return randomPastMonthDay(MonthDay.now(), includeLeapDay);
+  }
+
+  /**
+   * Returns a random {@link MonthDay} that is before the given {@link MonthDay}. Includes leap day
+   * if the current year is a leap year.
+   *
+   * @param before the value that returned {@link MonthDay} must be before
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if before is null or if before is equal to or before {@link
+   *     RandomDateUtils#MIN_INSTANT}
+   */
+  public static MonthDay randomPastMonthDay(MonthDay before) {
+    return randomPastMonthDay(before, Year.now().isLeap());
+  }
+
+  /**
+   * Returns a random {@link MonthDay} that is before the given {@link MonthDay}.
+   *
+   * @param before the value that returned {@link MonthDay} must be before
+   * @param includeLeapDay whether or not to include leap day
+   * @return the random {@link MonthDay}
+   * @throws IllegalArgumentException if before is null or if before is equal to or before {@link
+   *     RandomDateUtils#MIN_INSTANT}
+   */
+  public static MonthDay randomPastMonthDay(MonthDay before, boolean includeLeapDay) {
+    checkArgument(before != null, "Before must be non-null");
+    checkArgument(before.isAfter(MonthDay.of(JANUARY, 1)), "Before must be after January 1st");
+    int year = includeLeapDay ? LEAP_YEAR : LEAP_YEAR - 1;
+    LocalDate startOfYear = Year.of(year).atDay(1);
+    LocalDate end = before.atYear(year);
+    LocalDate localDate = randomLocalDate(startOfYear, end);
+    return MonthDay.of(localDate.getMonth(), localDate.getDayOfMonth());
   }
 
   /**
