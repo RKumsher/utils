@@ -5,6 +5,7 @@ import static java.time.Month.DECEMBER;
 import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MILLIS;
 
 import java.time.Clock;
 import java.time.DayOfWeek;
@@ -18,7 +19,6 @@ import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 
 import org.apache.commons.lang3.RandomUtils;
 
@@ -34,7 +34,7 @@ public class RandomDateUtils {
   private static final ZoneId UTC = ZoneId.of("UTC").normalized();
   private static final ZoneOffset UTC_OFFSET = ZoneOffset.UTC;
   private static final int LEAP_YEAR = 2004;
-  static final MonthDay LEAP_DAY = MonthDay.of(FEBRUARY, 29);
+  private static final MonthDay LEAP_DAY = MonthDay.of(FEBRUARY, 29);
   static final Instant MIN_INSTANT = Instant.ofEpochMilli(0);
   /* December 31st, 9999.  Limiting to just 4-digit years. */
   static final Instant MAX_INSTANT =
@@ -73,7 +73,7 @@ public class RandomDateUtils {
    * @return the random {@link ZonedDateTime}
    */
   public static ZonedDateTime randomFutureZonedDateTime() {
-    Instant instant = randomInstant(Instant.now().plus(1, ChronoUnit.MILLIS), MAX_INSTANT);
+    Instant instant = randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
     return ZonedDateTime.ofInstant(instant, UTC);
   }
 
@@ -148,7 +148,7 @@ public class RandomDateUtils {
    * @return the random {@link OffsetDateTime}
    */
   public static OffsetDateTime randomFutureOffsetDateTime() {
-    Instant instant = randomInstant(Instant.now().plus(1, ChronoUnit.MILLIS), MAX_INSTANT);
+    Instant instant = randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
     return OffsetDateTime.ofInstant(instant, UTC);
   }
 
@@ -225,7 +225,7 @@ public class RandomDateUtils {
    * @return the random {@link LocalDateTime}
    */
   public static LocalDateTime randomFutureLocalDateTime() {
-    Instant instant = randomInstant(Instant.now().plus(1, ChronoUnit.MILLIS), MAX_INSTANT);
+    Instant instant = randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
     return LocalDateTime.ofInstant(instant, UTC);
   }
 
@@ -301,7 +301,7 @@ public class RandomDateUtils {
    * @return the random {@link LocalDate}
    */
   public static LocalDate randomFutureLocalDate() {
-    Instant instant = randomInstant(Instant.now().plus(1, ChronoUnit.MILLIS), MAX_INSTANT);
+    Instant instant = randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
     return instant.atZone(UTC).toLocalDate();
   }
 
@@ -376,7 +376,7 @@ public class RandomDateUtils {
    * @return the random {@link Instant}
    */
   public static Instant randomFutureInstant() {
-    return randomInstant(Instant.now().plus(1, ChronoUnit.MILLIS), MAX_INSTANT);
+    return randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
   }
 
   /**
@@ -598,6 +598,116 @@ public class RandomDateUtils {
     LocalDate end = before.atYear(year);
     LocalDate localDate = randomLocalDate(startOfYear, end);
     return MonthDay.of(localDate.getMonth(), localDate.getDayOfMonth());
+  }
+
+  /**
+   * Returns a random {@link Year} between 1,000 (inclusive) and 10,000 (exclusive).
+   *
+   * @return the random {@link Year}
+   */
+  public static Year randomFourDigitYear() {
+    return Year.of(RandomUtils.nextInt(1_000, 10_000));
+  }
+
+  /**
+   * Returns a random {@link Year} within the specified range.
+   *
+   * @param startInclusive the earliest {@link Year} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random {@link Year}
+   * @throws IllegalArgumentException if startInclusive or endExclusive are null, if endExclusive is
+   *     earlier than startInclusive, if either are before 1,000, or if either are after 9,999
+   */
+  public static Year randomFourDigitYear(Year startInclusive, Year endExclusive) {
+    checkArgument(startInclusive != null, "Start must be non-null");
+    checkArgument(endExclusive != null, "End must be non-null");
+    return randomFourDigitYear(startInclusive.getValue(), endExclusive.getValue());
+  }
+
+  /**
+   * Returns a random {@link Year} within the specified range.
+   *
+   * @param startInclusive the earliest {@link Year} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random {@link Year}
+   * @throws IllegalArgumentException if endExclusive is earlier than startInclusive, if end is
+   *     before 1,000, or if start is after 9,999
+   */
+  public static Year randomFourDigitYear(int startInclusive, int endExclusive) {
+    checkArgument(startInclusive < 10_000, "Start must before 10,000");
+    checkArgument(endExclusive > 999, "End must be after 999");
+    checkArgument(!(startInclusive > endExclusive), "End must come on or after start");
+    return Year.of(RandomUtils.nextInt(startInclusive, endExclusive));
+  }
+
+  /**
+   * Returns a random {@link Year} that is after the current system clock.
+   *
+   * @return the random {@link Year}
+   */
+  public static Year randomFutureFourDigitYear() {
+    return Year.of(RandomUtils.nextInt(Year.now().getValue() + 1, 10_000));
+  }
+
+  /**
+   * Returns a random {@link Year} that is after the given {@link Year}.
+   *
+   * @param after the value that returned {@link Year} must be after
+   * @return the random {@link Year}
+   * @throws IllegalArgumentException if after is null, if after is equal to or after {@link
+   *     RandomDateUtils#MAX_INSTANT}, or if after >= 9,999
+   */
+  public static Year randomFutureFourDigitYear(Year after) {
+    checkArgument(after != null, "After must be non-null");
+    return randomFutureFourDigitYear(after.getValue());
+  }
+
+  /**
+   * Returns a random {@link Year} that is after the given {@link Year}.
+   *
+   * @param after the value that returned {@link Year} must be after
+   * @return the random {@link Year}
+   * @throws IllegalArgumentException if after is equal to or after {@link
+   *     RandomDateUtils#MAX_INSTANT} or if after >= 9,999
+   */
+  public static Year randomFutureFourDigitYear(int after) {
+    checkArgument(after < 9_999, "After must be before 9,999");
+    return Year.of(RandomUtils.nextInt(after, 9_999));
+  }
+
+  /**
+   * Returns a random {@link Year} that is before the current system clock.
+   *
+   * @return the random {@link Year}
+   */
+  public static Year randomPastFourDigitYear() {
+    return Year.of(RandomUtils.nextInt(1_000, Year.now().getValue()));
+  }
+
+  /**
+   * Returns a random {@link Year} that is before the given {@link Year}.
+   *
+   * @param before the value that returned {@link Year} must be before
+   * @return the random {@link Year}
+   * @throws IllegalArgumentException if before is null, if before is equal to or before {@link
+   *     RandomDateUtils#MIN_INSTANT}, or if before is <= 1,000
+   */
+  public static Year randomPastFourDigitYear(Year before) {
+    checkArgument(before != null, "Before must be non-null");
+    return randomPastFourDigitYear(before.getValue());
+  }
+
+  /**
+   * Returns a random {@link Year} that is before the given {@link Year}.
+   *
+   * @param before the value that returned {@link Year} must be before
+   * @return the random {@link Year}
+   * @throws IllegalArgumentException if before is equal to or before {@link
+   *     RandomDateUtils#MIN_INSTANT}, or if before is <= 1,000
+   */
+  public static Year randomPastFourDigitYear(int before) {
+    checkArgument(before > 1_000, "Before must be after 1,000");
+    return Year.of(RandomUtils.nextInt(1_000, before));
   }
 
   /**
