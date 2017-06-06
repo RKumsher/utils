@@ -34,6 +34,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomPastMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneId;
+import static kumsher.ryan.date.RandomDateUtils.randomZoneOffset;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTime;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
@@ -1056,5 +1057,10 @@ public class RandomDateUtilsTest {
   @Test
   public void randomMonth_ReturnsRandomEnumFromMonth() {
     assertThat(randomMonth(), isIn(Month.values()));
+  }
+
+  @Test
+  public void randomZoneOffset_ReturnsRandomOffset() {
+    assertThat(randomZoneOffset(), notNullValue());
   }
 }

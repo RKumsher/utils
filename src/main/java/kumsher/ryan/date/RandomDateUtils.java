@@ -35,6 +35,7 @@ public class RandomDateUtils {
   private static final ZoneOffset UTC_OFFSET = ZoneOffset.UTC;
   private static final int LEAP_YEAR = 2004;
   private static final MonthDay LEAP_DAY = MonthDay.of(FEBRUARY, 29);
+  private static final int MAX_ZONE_OFFSET_SECONDS = 64800;
   static final Instant MIN_INSTANT = Instant.ofEpochMilli(0);
   /* December 31st, 9999.  Limiting to just 4-digit years. */
   static final Instant MAX_INSTANT =
@@ -753,5 +754,16 @@ public class RandomDateUtils {
    */
   public static Month randomMonth() {
     return RandomEnumUtils.random(Month.class);
+  }
+
+  /**
+   * Returns a random {@link ZoneOffset} (-18:00 to +18:00).
+   *
+   * @return the random {@link ZoneOffset}
+   */
+  public static ZoneOffset randomZoneOffset() {
+    int totalSeconds =
+        MAX_ZONE_OFFSET_SECONDS - RandomUtils.nextInt(0, (MAX_ZONE_OFFSET_SECONDS * 2) + 1);
+    return ZoneOffset.ofTotalSeconds(totalSeconds);
   }
 }
