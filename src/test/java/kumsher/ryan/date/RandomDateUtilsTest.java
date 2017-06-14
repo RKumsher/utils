@@ -835,12 +835,6 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFutureMonthDay_ReturnsMonthDayAfterCurrentSystemClock() {
-    MonthDay now = MonthDay.now(CLOCK);
-    assertThat(randomFutureMonthDay().isAfter(now), is(true));
-  }
-
-  @Test
   public void randomPastMonthDay_WithBeforeGiven_ReturnsMonthDayBeforeGiven() {
     MonthDay before = MonthDay.now(CLOCK);
     assertThat(randomPastMonthDay(before).isBefore(before), is(true));
@@ -864,12 +858,6 @@ public class RandomDateUtilsTest {
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
     }
-  }
-
-  @Test
-  public void randomPastMonthDay_ReturnsMonthDayBeforeCurrentSystemClock() {
-    MonthDay now = MonthDay.now(CLOCK);
-    assertThat(randomPastMonthDay().isBefore(now), is(true));
   }
 
   @Test

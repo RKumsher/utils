@@ -494,37 +494,13 @@ public class RandomDateUtils {
   }
 
   /**
-   * Returns a random {@link MonthDay} that is after the current system clock. Leap day will only be
-   * include if the current year is a leap year. Includes leap day if the current year is a leap
-   * year.
-   *
-   * @return the random {@link MonthDay}
-   * @throws IllegalArgumentException if the current day is the last day of the year
-   */
-  public static MonthDay randomFutureMonthDay() {
-    return randomFutureMonthDay(Year.now().isLeap());
-  }
-
-  /**
-   * Returns a random {@link MonthDay} that is after the current system clock. Leap day will only be
-   * include if the current year is a leap year.
-   *
-   * @param includeLeapDay whether or not to include leap day
-   * @return the random {@link MonthDay}
-   * @throws IllegalArgumentException if the current day is the last day of the year
-   */
-  public static MonthDay randomFutureMonthDay(boolean includeLeapDay) {
-    return randomFutureMonthDay(MonthDay.now(), includeLeapDay);
-  }
-
-  /**
    * Returns a random {@link MonthDay} that is after the given {@link MonthDay}. Includes leap day
    * if the current year is a leap year.
    *
    * @param after the value that returned {@link MonthDay} must be after
    * @return the random {@link MonthDay}
-   * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
-   *     RandomDateUtils#MAX_INSTANT}
+   * @throws IllegalArgumentException if after is null or if after is last day of year (December
+   *     31st)
    */
   public static MonthDay randomFutureMonthDay(MonthDay after) {
     return randomFutureMonthDay(after, Year.now().isLeap());
@@ -536,8 +512,8 @@ public class RandomDateUtils {
    * @param after the value that returned {@link MonthDay} must be after
    * @param includeLeapDay whether or not to include leap day
    * @return the random {@link MonthDay}
-   * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
-   *     RandomDateUtils#MAX_INSTANT}
+   * @throws IllegalArgumentException if after is null or if after is last day of year (December
+   *     31st)
    */
   public static MonthDay randomFutureMonthDay(MonthDay after, boolean includeLeapDay) {
     checkArgument(after != null, "After must be non-null");
@@ -550,35 +526,13 @@ public class RandomDateUtils {
   }
 
   /**
-   * Returns a random {@link MonthDay} that is before the current system clock. Includes leap day if
-   * the current year is a leap year.
-   *
-   * @return the random {@link MonthDay}
-   * @throws IllegalArgumentException if the current day is the first day of the year
-   */
-  public static MonthDay randomPastMonthDay() {
-    return randomPastMonthDay(Year.now().isLeap());
-  }
-
-  /**
-   * Returns a random {@link MonthDay} that is before the current system clock.
-   *
-   * @param includeLeapDay whether or not to include leap day
-   * @return the random {@link MonthDay}
-   * @throws IllegalArgumentException if the current day is the first day of the year
-   */
-  public static MonthDay randomPastMonthDay(boolean includeLeapDay) {
-    return randomPastMonthDay(MonthDay.now(), includeLeapDay);
-  }
-
-  /**
    * Returns a random {@link MonthDay} that is before the given {@link MonthDay}. Includes leap day
    * if the current year is a leap year.
    *
    * @param before the value that returned {@link MonthDay} must be before
    * @return the random {@link MonthDay}
-   * @throws IllegalArgumentException if before is null or if before is equal to or before {@link
-   *     RandomDateUtils#MIN_INSTANT}
+   * @throws IllegalArgumentException if before is null or if before is first day of year (January
+   *     1st)
    */
   public static MonthDay randomPastMonthDay(MonthDay before) {
     return randomPastMonthDay(before, Year.now().isLeap());
@@ -590,8 +544,8 @@ public class RandomDateUtils {
    * @param before the value that returned {@link MonthDay} must be before
    * @param includeLeapDay whether or not to include leap day
    * @return the random {@link MonthDay}
-   * @throws IllegalArgumentException if before is null or if before is equal to or before {@link
-   *     RandomDateUtils#MIN_INSTANT}
+   * @throws IllegalArgumentException if before is null or if before is first day of year (January
+   *     1st)
    */
   public static MonthDay randomPastMonthDay(MonthDay before, boolean includeLeapDay) {
     checkArgument(before != null, "Before must be non-null");
