@@ -33,11 +33,14 @@ import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastZonedDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomPeriod;
+import static kumsher.ryan.date.RandomDateUtils.randomPositivePeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneId;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneOffset;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTime;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
@@ -1062,5 +1065,15 @@ public class RandomDateUtilsTest {
   @Test
   public void randomZoneOffset_ReturnsRandomOffset() {
     assertThat(randomZoneOffset(), notNullValue());
+  }
+
+  @Test
+  public void randomPeriod_ReturnsPeriodWhichMayBeNegative() {
+    assertThat(randomPeriod().isNegative(), isOneOf(true, false));
+  }
+
+  @Test
+  public void randomPositivePeriod_ReturnsPeriodWhichIsNotNegative() {
+    assertThat(randomPositivePeriod().isNegative(), is(false));
   }
 }

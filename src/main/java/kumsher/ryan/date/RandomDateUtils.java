@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.OffsetDateTime;
+import java.time.Period;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -765,5 +766,27 @@ public class RandomDateUtils {
     int totalSeconds =
         MAX_ZONE_OFFSET_SECONDS - RandomUtils.nextInt(0, (MAX_ZONE_OFFSET_SECONDS * 2) + 1);
     return ZoneOffset.ofTotalSeconds(totalSeconds);
+  }
+
+  /**
+   * Returns a random {@link Period} which may be negative.
+   *
+   * @return the random {@link Period}
+   */
+  public static Period randomPeriod() {
+    return Period.of(randomInt(true), randomInt(true), randomInt(true));
+  }
+
+  /**
+   * Returns a random {@link Period} which will not be negative.
+   *
+   * @return the random {@link Period}
+   */
+  public static Period randomPositivePeriod() {
+    return Period.of(randomInt(false), randomInt(false), randomInt(false));
+  }
+
+  private static int randomInt(boolean allowNegative) {
+    return RandomUtils.nextInt() * (allowNegative && RandomUtils.nextBoolean() ? -1 : 1);
   }
 }
