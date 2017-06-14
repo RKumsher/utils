@@ -9,6 +9,7 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 
 import java.time.Clock;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -769,24 +770,80 @@ public class RandomDateUtils {
   }
 
   /**
-   * Returns a random {@link Period} which may be negative.
+   * Returns a random {@link Period} which may be positive, negative, or {@link Period#ZERO}.
    *
    * @return the random {@link Period}
    */
   public static Period randomPeriod() {
-    return Period.of(randomInt(true), randomInt(true), randomInt(true));
+    return Period.of(randomInt(), randomInt(), randomInt());
   }
 
   /**
-   * Returns a random {@link Period} which will not be negative.
+   * Returns a random {@link Period} which will be positive.
    *
    * @return the random {@link Period}
    */
   public static Period randomPositivePeriod() {
-    return Period.of(randomInt(false), randomInt(false), randomInt(false));
+    return Period.of(randomPositiveInt(), randomPositiveInt(), randomPositiveInt());
   }
 
-  private static int randomInt(boolean allowNegative) {
-    return RandomUtils.nextInt() * (allowNegative && RandomUtils.nextBoolean() ? -1 : 1);
+  /**
+   * Returns a random {@link Period} which will be negative.
+   *
+   * @return the random {@link Period}
+   */
+  public static Period randomNegativePeriod() {
+    return Period.of(randomNegativeInt(), randomInt(), randomInt());
+  }
+
+  private static int randomInt() {
+    return RandomUtils.nextInt() * (RandomUtils.nextBoolean() ? -1 : 1);
+  }
+
+  private static int randomPositiveInt() {
+    return RandomUtils.nextInt(1, Integer.MAX_VALUE);
+  }
+
+  private static int randomNegativeInt() {
+    return -RandomUtils.nextInt(1, Integer.MAX_VALUE);
+  }
+
+  /**
+   * Returns a random {@link Duration} which may be positive, negative, or {@link Duration#ZERO}.
+   *
+   * @return the random {@link Duration}
+   */
+  public static Duration randomDuration() {
+    return Duration.ofNanos(randomLong());
+  }
+
+  /**
+   * Returns a random {@link Duration} which will positive.
+   *
+   * @return the random {@link Duration}
+   */
+  public static Duration randomPositiveDuration() {
+    return Duration.ofNanos(randomPositiveLong());
+  }
+
+  /**
+   * Returns a random {@link Duration} which will be negative.
+   *
+   * @return the random {@link Duration}
+   */
+  public static Duration randomNegativeDuration() {
+    return Duration.ofNanos(randomNegativeLong());
+  }
+
+  private static long randomLong() {
+    return RandomUtils.nextLong() * (RandomUtils.nextBoolean() ? -1 : 1);
+  }
+
+  private static long randomPositiveLong() {
+    return RandomUtils.nextLong(1, Long.MAX_VALUE);
+  }
+
+  private static long randomNegativeLong() {
+    return -RandomUtils.nextLong(1, Long.MAX_VALUE);
   }
 }

@@ -10,6 +10,7 @@ import static kumsher.ryan.date.RandomDateUtils.MAX_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.isLeapDay;
 import static kumsher.ryan.date.RandomDateUtils.randomDayOfWeek;
+import static kumsher.ryan.date.RandomDateUtils.randomDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedUtcClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFourDigitYear;
@@ -25,6 +26,8 @@ import static kumsher.ryan.date.RandomDateUtils.randomLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomMonthDay;
+import static kumsher.ryan.date.RandomDateUtils.randomNegativeDuration;
+import static kumsher.ryan.date.RandomDateUtils.randomNegativePeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastFourDigitYear;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
@@ -34,6 +37,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomPastMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPeriod;
+import static kumsher.ryan.date.RandomDateUtils.randomPositiveDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomPositivePeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneId;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneOffset;
@@ -1068,12 +1072,52 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPeriod_ReturnsPeriodWhichMayBeNegative() {
+  public void randomPeriod_ReturnsPeriodWhichMayBePositiveOrNegativeOrZero() {
     assertThat(randomPeriod().isNegative(), isOneOf(true, false));
   }
 
   @Test
-  public void randomPositivePeriod_ReturnsPeriodWhichIsNotNegative() {
+  public void randomPositivePeriod_ReturnsPeriodWhichIsPositive() {
     assertThat(randomPositivePeriod().isNegative(), is(false));
+  }
+
+  @Test
+  public void randomPositivePeriod_ReturnsPeriodWhichIsNotZero() {
+    assertThat(randomPositivePeriod().isZero(), is(false));
+  }
+
+  @Test
+  public void randomNegativePeriod_ReturnsPeriodWhichIsNegative() {
+    assertThat(randomNegativePeriod().isNegative(), is(true));
+  }
+
+  @Test
+  public void randomNegativePeriod_ReturnsPeriodWhichIsNotZero() {
+    assertThat(randomNegativePeriod().isNegative(), is(true));
+  }
+
+  @Test
+  public void randomDuration_ReturnsDurationWhichMayBePositiveOrNegativeOrZero() {
+    assertThat(randomDuration().isNegative(), isOneOf(true, false));
+  }
+
+  @Test
+  public void randomPositiveDuration_ReturnsDurationWhichIsPositive() {
+    assertThat(randomPositiveDuration().isNegative(), is(false));
+  }
+
+  @Test
+  public void randomPositiveDuration_ReturnsDurationWhichIsNotZero() {
+    assertThat(randomPositiveDuration().isZero(), is(false));
+  }
+
+  @Test
+  public void randomNegativeDuration_ReturnsDurationWhichIsNegative() {
+    assertThat(randomNegativeDuration().isNegative(), is(true));
+  }
+
+  @Test
+  public void randomNegativeDuration_ReturnsDurationWhichIsNotZero() {
+    assertThat(randomNegativeDuration().isZero(), is(false));
   }
 }
