@@ -78,8 +78,7 @@ public class RandomDateUtils {
    * @return the random {@link ZonedDateTime}
    */
   public static ZonedDateTime randomFutureZonedDateTime() {
-    Instant instant = randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
-    return ZonedDateTime.ofInstant(instant, UTC);
+    return randomFutureZonedDateTime(ZonedDateTime.now());
   }
 
   /**
@@ -102,8 +101,7 @@ public class RandomDateUtils {
    * @return the random {@link ZonedDateTime}
    */
   public static ZonedDateTime randomPastZonedDateTime() {
-    Instant instant = randomInstant(MIN_INSTANT, Instant.now());
-    return ZonedDateTime.ofInstant(instant, UTC);
+    return randomPastZonedDateTime(ZonedDateTime.now());
   }
 
   /**
@@ -153,8 +151,7 @@ public class RandomDateUtils {
    * @return the random {@link OffsetDateTime}
    */
   public static OffsetDateTime randomFutureOffsetDateTime() {
-    Instant instant = randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
-    return OffsetDateTime.ofInstant(instant, UTC);
+    return randomFutureOffsetDateTime(OffsetDateTime.now());
   }
 
   /**
@@ -177,8 +174,7 @@ public class RandomDateUtils {
    * @return the random {@link OffsetDateTime}
    */
   public static OffsetDateTime randomPastOffsetDateTime() {
-    Instant instant = randomInstant(MIN_INSTANT, Instant.now());
-    return OffsetDateTime.ofInstant(instant, UTC);
+    return randomPastOffsetDateTime(OffsetDateTime.now());
   }
 
   /**
@@ -230,8 +226,7 @@ public class RandomDateUtils {
    * @return the random {@link LocalDateTime}
    */
   public static LocalDateTime randomFutureLocalDateTime() {
-    Instant instant = randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
-    return LocalDateTime.ofInstant(instant, UTC);
+    return randomFutureLocalDateTime(LocalDateTime.now());
   }
 
   /**
@@ -254,8 +249,7 @@ public class RandomDateUtils {
    * @return the random {@link LocalDateTime}
    */
   public static LocalDateTime randomPastLocalDateTime() {
-    Instant instant = randomInstant(MIN_INSTANT, Instant.now());
-    return LocalDateTime.ofInstant(instant, UTC);
+    return randomPastLocalDateTime(LocalDateTime.now());
   }
 
   /**
@@ -306,8 +300,7 @@ public class RandomDateUtils {
    * @return the random {@link LocalDate}
    */
   public static LocalDate randomFutureLocalDate() {
-    Instant instant = randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
-    return instant.atZone(UTC).toLocalDate();
+    return randomFutureLocalDate(LocalDate.now());
   }
 
   /**
@@ -320,7 +313,7 @@ public class RandomDateUtils {
    */
   public static LocalDate randomFutureLocalDate(LocalDate after) {
     checkArgument(after != null, "After must be non-null");
-    Instant instant = randomFutureInstant(after.atStartOfDay(UTC).toInstant());
+    Instant instant = randomFutureInstant(after.atStartOfDay(UTC).plus(1, DAYS).toInstant());
     return instant.atZone(UTC).toLocalDate();
   }
 
@@ -330,8 +323,7 @@ public class RandomDateUtils {
    * @return the random {@link LocalDate}
    */
   public static LocalDate randomPastLocalDate() {
-    Instant instant = randomInstant(MIN_INSTANT, Instant.now());
-    return instant.atZone(UTC).toLocalDate();
+    return randomPastLocalDate(LocalDate.now());
   }
 
   /**
@@ -381,7 +373,7 @@ public class RandomDateUtils {
    * @return the random {@link Instant}
    */
   public static Instant randomFutureInstant() {
-    return randomInstant(Instant.now().plus(1, MILLIS), MAX_INSTANT);
+    return randomFutureInstant(Instant.now());
   }
 
   /**
@@ -395,7 +387,7 @@ public class RandomDateUtils {
   public static Instant randomFutureInstant(Instant after) {
     checkArgument(after != null, "After must be non-null");
     checkArgument(after.isBefore(MAX_INSTANT), "Cannot produce date after " + MAX_INSTANT);
-    return randomInstant(after, MAX_INSTANT);
+    return randomInstant(after.plus(1, MILLIS), MAX_INSTANT);
   }
 
   /**
@@ -404,7 +396,7 @@ public class RandomDateUtils {
    * @return the random {@link Instant}
    */
   public static Instant randomPastInstant() {
-    return randomInstant(MIN_INSTANT, Instant.now());
+    return randomPastInstant(Instant.now());
   }
 
   /**
@@ -680,7 +672,7 @@ public class RandomDateUtils {
    * @return the random {@link Year}
    */
   public static Year randomFutureFourDigitYear() {
-    return Year.of(RandomUtils.nextInt(Year.now().getValue() + 1, 10_000));
+    return randomFutureFourDigitYear(Year.now());
   }
 
   /**
@@ -706,7 +698,7 @@ public class RandomDateUtils {
    */
   public static Year randomFutureFourDigitYear(int after) {
     checkArgument(after < 9_999, "After must be before 9,999");
-    return Year.of(RandomUtils.nextInt(after, 9_999));
+    return Year.of(RandomUtils.nextInt(after + 1, 9_999));
   }
 
   /**
@@ -715,7 +707,7 @@ public class RandomDateUtils {
    * @return the random {@link Year}
    */
   public static Year randomPastFourDigitYear() {
-    return Year.of(RandomUtils.nextInt(1_000, Year.now().getValue()));
+    return randomPastFourDigitYear(Year.now());
   }
 
   /**
