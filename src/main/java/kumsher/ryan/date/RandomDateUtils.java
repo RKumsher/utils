@@ -6,6 +6,7 @@ import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MONTHS;
 
 import java.time.Clock;
 import java.time.DayOfWeek;
@@ -18,6 +19,7 @@ import java.time.MonthDay;
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.Year;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -555,6 +557,81 @@ public class RandomDateUtils {
     LocalDate end = before.atYear(year);
     LocalDate localDate = randomLocalDate(startOfYear, end);
     return MonthDay.of(localDate.getMonth(), localDate.getDayOfMonth());
+  }
+
+  /**
+   * Returns a random {@link YearMonth} between 1,000 and 10,000.
+   *
+   * @return the random {@link YearMonth}
+   */
+  public static YearMonth randomYearMonth() {
+    return YearMonth.of(randomFourDigitYear().getValue(), randomMonth());
+  }
+
+  /**
+   * Returns a random {@link YearMonth} within the specified range.
+   *
+   * @param startInclusive the earliest {@link YearMonth} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random {@link YearMonth}
+   * @throws IllegalArgumentException if startInclusive or endExclusive are null or if endExclusive
+   *     is earlier than startInclusive
+   */
+  public static YearMonth randomYearMonth(YearMonth startInclusive, YearMonth endExclusive) {
+    checkArgument(startInclusive != null, "Start must be non-null");
+    checkArgument(endExclusive != null, "End must be non-null");
+    LocalDate start = startInclusive.atDay(1);
+    LocalDate end = endExclusive.atDay(1);
+    LocalDate localDate = randomLocalDate(start, end);
+    return YearMonth.of(localDate.getYear(), localDate.getMonth());
+  }
+
+  /**
+   * Returns a random {@link YearMonth} that is after the current system clock.
+   *
+   * @return the random {@link YearMonth}
+   */
+  public static YearMonth randomFutureYearMonth() {
+    return randomFutureYearMonth(YearMonth.now());
+  }
+
+  /**
+   * Returns a random {@link YearMonth} that is after the given {@link YearMonth}.
+   *
+   * @param after the value that returned {@link YearMonth} must be after
+   * @return the random {@link YearMonth}
+   * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
+   *     RandomDateUtils#MAX_INSTANT}
+   */
+  public static YearMonth randomFutureYearMonth(YearMonth after) {
+    checkArgument(after != null, "After must be non-null");
+    LocalDate start = after.plus(1, MONTHS).atDay(1);
+    LocalDate localDate = randomFutureLocalDate(start);
+    return YearMonth.of(localDate.getYear(), localDate.getMonth());
+  }
+
+  /**
+   * Returns a random {@link YearMonth} that is before the current system clock.
+   *
+   * @return the random {@link YearMonth}
+   */
+  public static YearMonth randomPastYearMonth() {
+    return randomPastYearMonth(YearMonth.now());
+  }
+
+  /**
+   * Returns a random {@link YearMonth} that is before the given {@link YearMonth}.
+   *
+   * @param before the value that returned {@link YearMonth} must be before
+   * @return the random {@link YearMonth}
+   * @throws IllegalArgumentException if before is null or if before is equal to or before {@link
+   *     RandomDateUtils#MIN_INSTANT}
+   */
+  public static YearMonth randomPastYearMonth(YearMonth before) {
+    checkArgument(before != null, "Before must be non-null");
+    LocalDate start = before.atDay(1);
+    LocalDate localDate = randomPastLocalDate(start);
+    return YearMonth.of(localDate.getYear(), localDate.getMonth());
   }
 
   /**

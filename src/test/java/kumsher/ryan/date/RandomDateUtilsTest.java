@@ -5,6 +5,7 @@ import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static kumsher.ryan.date.RandomDateUtils.MAX_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
@@ -20,6 +21,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureOffsetDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomFutureYearMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDate;
@@ -35,10 +37,12 @@ import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomPastYearMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomPastZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomPositiveDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomPositivePeriod;
+import static kumsher.ryan.date.RandomDateUtils.randomYearMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneId;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneOffset;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTime;
@@ -58,6 +62,7 @@ import java.time.Month;
 import java.time.MonthDay;
 import java.time.OffsetDateTime;
 import java.time.Year;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -82,6 +87,8 @@ public class RandomDateUtilsTest {
   private static final MonthDay MAX_MONTH_DAY = MonthDay.of(DECEMBER, 31);
   private static final Year MAX_YEAR = Year.of(9_999);
   private static final Year MIN_YEAR = Year.of(1_000);
+  private static final YearMonth MAX_YEAR_MONTH = YearMonth.of(9_999, DECEMBER);
+  private static final YearMonth MIN_YEAR_MONTH = YearMonth.of(1_000, JANUARY);
 
   @Test
   public void randomZonedDateTime_ReturnsZonedDateTimeBetweenMinAndMaxInstants() {
@@ -858,6 +865,131 @@ public class RandomDateUtilsTest {
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
     }
+  }
+
+  @Test
+  public void randomYearMonth_ReturnsYearMonthWithFourDigitYear() {
+    YearMonth yearMonth = randomYearMonth();
+    assertThat(yearMonth.getYear() >= 1_000, is(true));
+    assertThat(yearMonth.getYear() < 10_000, is(true));
+  }
+
+  @Test
+  public void randomYearMonth_ReturnsYearMonthBetweenGivenYearMonths() {
+    YearMonth start = YearMonth.now(CLOCK).minus(1, MONTHS);
+    YearMonth end = YearMonth.now(CLOCK).plus(1, MONTHS);
+    YearMonth yearMonth = randomYearMonth(start, end);
+    assertTrue(yearMonth.isAfter(start) || yearMonth.equals(start));
+    assertTrue(yearMonth.isBefore(end));
+  }
+
+  @Test
+  public void randomYearMonth_WithYearMonthsOneDayApart_ReturnsStart() {
+    YearMonth start = YearMonth.now(CLOCK);
+    YearMonth end = YearMonth.now(CLOCK).plus(1, MONTHS);
+    assertThat(randomYearMonth(start, end), is(start));
+  }
+
+  @Test
+  public void randomYearMonth_WithEqualYearMonths_ReturnsStartYearMonth() {
+    YearMonth yearMonth = YearMonth.now(CLOCK);
+    assertThat(randomYearMonth(yearMonth, yearMonth), is(yearMonth));
+  }
+
+  @Test
+  public void randomYearMonth_WithNullEndYearMonth_ThrowsIllegalArgumentException() {
+    try {
+      randomYearMonth(YearMonth.now(CLOCK), null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomYearMonth_WithNullStartYearMonth_ThrowsIllegalArgumentException() {
+    try {
+      randomYearMonth(null, YearMonth.now(CLOCK));
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomYearMonth_WithStartAfterEndYearMonth_ThrowsIllegalArgumentException() {
+    YearMonth start = YearMonth.now(CLOCK).plus(1, MONTHS);
+    YearMonth end = YearMonth.now(CLOCK).minus(1, MONTHS);
+    try {
+      randomYearMonth(start, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must come on or after start"));
+    }
+  }
+
+  @Test
+  public void randomFutureYearMonth_WithAfterGiven_ReturnsYearMonthAfterGiven() {
+    YearMonth after = YearMonth.now(CLOCK);
+    assertThat(randomFutureYearMonth(after).isAfter(after), is(true));
+  }
+
+  @Test
+  public void randomFutureYearMonth_WithMaxYearMonth_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureYearMonth(MAX_YEAR_MONTH);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Cannot produce date after " + MAX_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomFutureYearMonth_WithNullYearMonth_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureYearMonth(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomFutureYearMonth_ReturnsYearMonthAfterCurrentSystemClock() {
+    YearMonth now = YearMonth.now(CLOCK);
+    assertThat(randomFutureYearMonth().isAfter(now), is(true));
+  }
+
+  @Test
+  public void randomPastYearMonth_WithBeforeGiven_ReturnsYearMonthBeforeGiven() {
+    YearMonth before = YearMonth.now(CLOCK);
+    assertThat(randomPastYearMonth(before).isBefore(before), is(true));
+  }
+
+  @Test
+  public void randomPastYearMonth_WithMinYearMonth_ThrowsIllegalArgumentException() {
+    try {
+      randomPastYearMonth(MIN_YEAR_MONTH);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomPastYearMonth_WithNullYearMonth_ThrowsIllegalArgumentException() {
+    try {
+      randomPastYearMonth(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomPastYearMonth_ReturnsYearMonthBeforeCurrentSystemClock() {
+    YearMonth now = YearMonth.now(CLOCK);
+    assertThat(randomPastYearMonth().isBefore(now), is(true));
   }
 
   @Test
