@@ -16,6 +16,8 @@ import com.google.common.collect.Range;
 /** Utility library to return random collections. */
 public final class RandomCollectionUtils {
 
+  private RandomCollectionUtils() {}
+
   /**
    * Returns a random list filled with the given elements.
    *

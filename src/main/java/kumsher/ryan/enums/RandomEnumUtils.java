@@ -8,6 +8,8 @@ import kumsher.ryan.collection.IterableUtils;
 /** Utility library to return random elements from enum instances. */
 public final class RandomEnumUtils {
 
+  private RandomEnumUtils() {}
+
   /**
    * Returns a random element from the given enum class.
    *

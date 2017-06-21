@@ -45,6 +45,8 @@ public final class RandomDateUtils {
   static final Instant MAX_INSTANT =
       Instant.ofEpochMilli(LocalDate.of(9999, 12, 31).atStartOfDay(UTC).toInstant().toEpochMilli());
 
+  private RandomDateUtils() {}
+
   /**
    * Returns a random {@link ZonedDateTime} between {@link RandomDateUtils#MIN_INSTANT} and {@link
    * RandomDateUtils#MAX_INSTANT}.

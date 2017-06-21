@@ -14,6 +14,8 @@ public final class IterableUtils {
 
   private static final Random RANDOM = new Random();
 
+  private IterableUtils() {}
+
   /**
    * Returns a random element from the given {@link Iterable}.
    *
