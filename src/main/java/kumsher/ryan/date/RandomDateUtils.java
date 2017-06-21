@@ -33,7 +33,7 @@ import kumsher.ryan.enums.RandomEnumUtils;
  * Utility library to return random dates, e.g., {@link Instant}s, {@link ZonedDateTime}s, {@link
  * LocalDate}s, etc..
  */
-public class RandomDateUtils {
+public final class RandomDateUtils {
 
   private static final ZoneId UTC = ZoneId.of("UTC").normalized();
   private static final ZoneOffset UTC_OFFSET = ZoneOffset.UTC;

@@ -6,7 +6,7 @@ import java.util.EnumSet;
 import kumsher.ryan.collection.IterableUtils;
 
 /** Utility library to return random elements from enum instances. */
-public class RandomEnumUtils {
+public final class RandomEnumUtils {
 
   /**
    * Returns a random element from the given enum class.

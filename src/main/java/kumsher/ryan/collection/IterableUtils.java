@@ -10,7 +10,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /** Utility library for working with {@link Iterable}s. */
-public class IterableUtils {
+public final class IterableUtils {
 
   private static final Random RANDOM = new Random();
 

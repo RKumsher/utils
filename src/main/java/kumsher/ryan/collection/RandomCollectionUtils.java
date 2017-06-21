@@ -14,7 +14,7 @@ import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 
 /** Utility library to return random collections. */
-public class RandomCollectionUtils {
+public final class RandomCollectionUtils {
 
   /**
    * Returns a random list filled with the given elements.
