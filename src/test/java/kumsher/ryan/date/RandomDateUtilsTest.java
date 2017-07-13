@@ -3,6 +3,7 @@ package kumsher.ryan.date;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.MONTHS;
@@ -10,11 +11,13 @@ import static java.time.temporal.ChronoUnit.YEARS;
 import static kumsher.ryan.date.RandomDateUtils.MAX_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.isLeapDay;
+import static kumsher.ryan.date.RandomDateUtils.random;
 import static kumsher.ryan.date.RandomDateUtils.randomDayOfWeek;
 import static kumsher.ryan.date.RandomDateUtils.randomDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedUtcClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFourDigitYear;
+import static kumsher.ryan.date.RandomDateUtils.randomFuture;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureFourDigitYear;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
@@ -31,6 +34,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomNegativeDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomNegativePeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomPast;
 import static kumsher.ryan.date.RandomDateUtils.randomPastFourDigitYear;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
@@ -66,8 +70,12 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 
 import org.junit.Test;
+
+import kumsher.ryan.enums.RandomEnumUtils;
 
 public class RandomDateUtilsTest {
 
@@ -728,6 +736,107 @@ public class RandomDateUtilsTest {
   }
 
   @Test
+  public void random_ReturnsValidValueForGivenTemporalField() {
+    TemporalField field = RandomEnumUtils.random(ChronoField.class);
+    long value = random(field);
+    assertThat(field.range().isValidValue(value), is(true));
+  }
+
+  @Test
+  public void random_ReturnsValidValueBetweenGiven() {
+    long start = SECOND_OF_MINUTE.range().getMinimum();
+    long end = SECOND_OF_MINUTE.range().getMaximum();
+
+    long value = random(SECOND_OF_MINUTE, start, end);
+    assertTrue(value >= start);
+    assertTrue(value < end);
+  }
+
+  @Test
+  public void random_WithStartAndEndOneApart_ReturnsStart() {
+    long start = 1;
+    long end = 2;
+    assertThat(random(SECOND_OF_MINUTE, start, end), is(start));
+  }
+
+  @Test
+  public void random_WithEqualStartAndEnd_ReturnsStart() {
+    long start = 1;
+    long end = 1;
+    assertThat(random(SECOND_OF_MINUTE, start, end), is(start));
+  }
+
+  @Test
+  public void random_WithStartAfterEnd_ThrowsIllegalArgumentException() {
+    try {
+      random(SECOND_OF_MINUTE, 2, 1);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage(), is("End must come on or after start"));
+    }
+  }
+
+  @Test
+  public void random_WithStartBeforeMin_ThrowsIllegalArgumentException() {
+    long start = SECOND_OF_MINUTE.range().getMinimum() - 1;
+    long end = 2;
+    try {
+      random(SECOND_OF_MINUTE, start, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be on or after 0"));
+    }
+  }
+
+  @Test
+  public void random_WithAfterMax_ThrowsIllegalArgumentException() {
+    long start = 1;
+    long end = SECOND_OF_MINUTE.range().getMaximum() + 1;
+    try {
+      random(SECOND_OF_MINUTE, start, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be on or before 59"));
+    }
+  }
+
+  @Test
+  public void randomFuture_ReturnsValueAfterGiven() {
+    ChronoField field = RandomEnumUtils.random(ChronoField.class);
+    long after = randomPast(field, field.range().getMaximum());
+    assertThat(randomFuture(field, after) > after, is(true));
+  }
+
+  @Test
+  public void randomFuture_WithMaxValue_ThrowsIllegalArgumentException() {
+    ChronoField field = RandomEnumUtils.random(ChronoField.class);
+    try {
+      randomFuture(field, field.range().getMaximum());
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be before " + field.range().getMaximum()));
+    }
+  }
+
+  @Test
+  public void randomPastValue_ReturnsValueBeforeGiven() {
+    ChronoField field = RandomEnumUtils.random(ChronoField.class);
+    long before = randomFuture(field, field.range().getMinimum());
+    assertThat(randomPast(field, before) < (before), is(true));
+  }
+
+  @Test
+  public void randomPastValue_WithMinValue_ThrowsIllegalArgumentException() {
+    ChronoField field = RandomEnumUtils.random(ChronoField.class);
+    try {
+      randomPast(field, field.range().getMinimum());
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be after " + field.range().getMinimum()));
+    }
+  }
+
+  @Test
   public void isLeapDay_WithFebruaryTwentyNinth_ReturnsTrue() {
     MonthDay monthDay = MonthDay.of(FEBRUARY, 29);
     assertThat(isLeapDay(monthDay), is(true));
@@ -816,7 +925,7 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFutureMonthDay_WithAfterGiven_ReturnsMonthDayAfterGiven() {
+  public void randomFutureMonthDay_ReturnsMonthDayAfterGiven() {
     MonthDay after = MonthDay.now(CLOCK);
     assertThat(randomFutureMonthDay(after).isAfter(after), is(true));
   }
@@ -842,7 +951,7 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastMonthDay_WithBeforeGiven_ReturnsMonthDayBeforeGiven() {
+  public void randomPastMonthDay_ReturnsMonthDayBeforeGiven() {
     MonthDay before = MonthDay.now(CLOCK);
     assertThat(randomPastMonthDay(before).isBefore(before), is(true));
   }

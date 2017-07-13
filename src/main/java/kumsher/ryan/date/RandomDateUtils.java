@@ -23,6 +23,9 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
+import java.util.Random;
 
 import org.apache.commons.lang3.RandomUtils;
 
@@ -388,7 +391,7 @@ public final class RandomDateUtils {
    */
   public static Instant randomFutureInstant(Instant after) {
     checkArgument(after != null, "After must be non-null");
-    checkArgument(after.isBefore(MAX_INSTANT), "Cannot produce date after " + MAX_INSTANT);
+    checkArgument(after.isBefore(MAX_INSTANT), "Cannot produce date after %s", MAX_INSTANT);
     return randomInstant(after.plus(1, MILLIS), MAX_INSTANT);
   }
 
@@ -411,8 +414,94 @@ public final class RandomDateUtils {
    */
   public static Instant randomPastInstant(Instant before) {
     checkArgument(before != null, "Before must be non-null");
-    checkArgument(before.isAfter(MIN_INSTANT), "Cannot produce date before " + MIN_INSTANT);
+    checkArgument(before.isAfter(MIN_INSTANT), "Cannot produce date before %s", MIN_INSTANT);
     return randomInstant(MIN_INSTANT, before);
+  }
+
+  /**
+   * Returns a random valid value for the given {@link TemporalField} between <code>
+   * TemporalField.range().min()</code> and <code>TemporalField.range().max()</code>. For example,
+   * <code>random({@link ChronoField#HOUR_OF_DAY})</code> will return a random value between 0-23.
+   *
+   * <p>*
+   *
+   * <p>Note: This will never return {@link Long#MAX_VALUE}. Even if it's a valid value for the
+   * given {@link TemporalField}.
+   *
+   * @param field the {@link TemporalField} to return a valid value for
+   * @return the random value
+   */
+  public static long random(TemporalField field) {
+    long max = Math.min(field.range().getMaximum(), Long.MAX_VALUE - 1);
+    return randomLong(field.range().getMinimum(), max + 1);
+  }
+
+  /**
+   * Returns a random valid value for the given {@link TemporalField} between <code>
+   * startInclusive</code> and <code>endExclusive</code>.
+   *
+   * @param field the {@link TemporalField} to return a valid value for
+   * @param startInclusive the smallest value that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random value
+   * @throws IllegalArgumentException if startInclusive is on or before <code>
+   *     TemporalField.range().min()
+   *     </code>, if endExclusive is on or after <code>TemporalField.range().max()</code>, or if
+   *     startInclusive is after after endExclusive
+   */
+  public static long random(TemporalField field, long startInclusive, long endExclusive) {
+    long min = field.range().getMinimum();
+    long max = field.range().getMaximum();
+    checkArgument(startInclusive >= min, "Start must be on or after %s", min);
+    checkArgument(endExclusive <= max, "End must be on or before %s", max);
+    checkArgument(startInclusive <= endExclusive, "End must come on or after start");
+    min = Math.max(startInclusive, field.range().getMinimum());
+    max = Math.min(endExclusive, field.range().getMaximum());
+    return randomLong(min, max);
+  }
+
+  /**
+   * Returns a random valid value for the given {@link TemporalField} between <code>
+   * after</code> and <code>TemporalField.range().max()</code>. For example, <code>
+   * randomFuture({@link ChronoField#HOUR_OF_DAY}, 12)</code> will return a random value between
+   * 13-23.
+   *
+   * <p>Note: This will never return {@link Long#MAX_VALUE}. Even if it's a valid value for the
+   * given {@link TemporalField}.
+   *
+   * @param field the {@link TemporalField} to return a valid value for
+   * @param after the value that the returned value must be after
+   * @return the random value
+   * @throws IllegalArgumentException if after is before <code>
+   *     TemporalField.range().min()
+   *     </code> or if after is on or after <code>TemporalField.range().max()</code>
+   */
+  public static long randomFuture(TemporalField field, long after) {
+    Long min = field.range().getMinimum();
+    Long max = field.range().getMaximum();
+    checkArgument(after < max, "After must be before %s", max);
+    checkArgument(after >= min, "After must be on or after %s", min);
+    return randomLong(after + 1, Math.min(max, Long.MAX_VALUE - 1) + 1);
+  }
+
+  /**
+   * Returns a random valid value for the given {@link TemporalField} between <code>
+   * after</code> and <code>TemporalField.range().max()</code>. For example, <code>
+   * randomPast({@link ChronoField#HOUR_OF_DAY}, 13)</code> will return a random value between 0-12.
+   *
+   * @param field the {@link TemporalField} to return a valid value for
+   * @param before the value that the returned value must be before
+   * @return the random value
+   * @throws IllegalArgumentException if before is after <code>
+   *     TemporalField.range().max()
+   *     </code> or if before is on or before <code>TemporalField.range().min()</code>
+   */
+  public static long randomPast(TemporalField field, long before) {
+    long min = field.range().getMinimum();
+    long max = field.range().getMaximum();
+    checkArgument(before > min, "Before must be after %s", min);
+    checkArgument(before <= max, "Before must be on or before %s", max);
+    return randomLong(min, before);
   }
 
   /**
@@ -862,6 +951,13 @@ public final class RandomDateUtils {
 
   private static long randomLong() {
     return RandomUtils.nextLong() * (RandomUtils.nextBoolean() ? -1 : 1);
+  }
+
+  private static long randomLong(long startInclusive, long endExclusive) {
+    if (startInclusive == endExclusive) {
+      return startInclusive;
+    }
+    return new Random().longs(1, startInclusive, endExclusive).sum();
   }
 
   private static long randomPositiveLong() {
