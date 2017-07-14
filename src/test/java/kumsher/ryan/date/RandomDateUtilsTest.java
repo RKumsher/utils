@@ -5,8 +5,10 @@ import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.YEARS;
 import static kumsher.ryan.date.RandomDateUtils.MAX_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
@@ -22,6 +24,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomFutureFourDigitYear;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalTime;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureYearMonth;
@@ -29,6 +32,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomFutureZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomLocalTime;
 import static kumsher.ryan.date.RandomDateUtils.randomMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomNegativeDuration;
@@ -39,6 +43,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomPastFourDigitYear;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
+import static kumsher.ryan.date.RandomDateUtils.randomPastLocalTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastYearMonth;
@@ -62,6 +67,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.OffsetDateTime;
@@ -736,6 +742,118 @@ public class RandomDateUtilsTest {
   }
 
   @Test
+  public void randomLocalTime_ReturnsRandomLocalTime() {
+    LocalTime localTime = randomLocalTime();
+    assertThat(localTime, notNullValue());
+  }
+
+  @Test
+  public void randomLocalTime_ReturnsLocalTimeBetweenGivenLocalTimes() {
+    LocalTime start = LocalTime.NOON.minus(1, HOURS);
+    LocalTime end = LocalTime.NOON.plus(1, HOURS);
+    LocalTime localTime = randomLocalTime(start, end);
+    assertTrue(localTime.isAfter(start) || localTime.equals(start));
+    assertTrue(localTime.isBefore(end));
+  }
+
+  @Test
+  public void randomLocalTime_WithLocalTimesOneNanoApart_ReturnsStart() {
+    LocalTime start = LocalTime.NOON;
+    LocalTime end = start.plus(1, NANOS);
+    assertThat(randomLocalTime(start, end), is(start));
+  }
+
+  @Test
+  public void randomLocalTime_WithEqualLocalTimes_ReturnsStartLocalTime() {
+    LocalTime localTime = LocalTime.NOON;
+    assertThat(randomLocalTime(localTime, localTime), is(localTime));
+  }
+
+  @Test
+  public void randomLocalTime_WithNullEndLocalTime_ThrowsIllegalArgumentException() {
+    try {
+      randomLocalTime(LocalTime.NOON, null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomLocalTime_WithNullStartLocalTime_ThrowsIllegalArgumentException() {
+    try {
+      randomLocalTime(null, LocalTime.NOON);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomLocalTime_WithStartAfterEndLocalTime_ThrowsIllegalArgumentException() {
+    LocalTime start = LocalTime.NOON.plus(1, HOURS);
+    LocalTime end = LocalTime.NOON;
+    try {
+      randomLocalTime(start, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must come on or after start"));
+    }
+  }
+
+  @Test
+  public void randomFutureLocalTime_ReturnsLocalTimeAfterGiven() {
+    LocalTime after = LocalTime.NOON;
+    assertThat(randomFutureLocalTime(after).isAfter(after), is(true));
+  }
+
+  @Test
+  public void randomFutureLocalTime_WithMaxLocalTime_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureLocalTime(LocalTime.MAX);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be before " + LocalTime.MAX));
+    }
+  }
+
+  @Test
+  public void randomFutureLocalTime_WithNullLocalTime_ThrowsIllegalArgumentException() {
+    try {
+      randomFutureLocalTime(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomPastLocalTime_ReturnsLocalTimeBeforeGiven() {
+    LocalTime before = LocalTime.NOON;
+    assertThat(randomPastLocalTime(before).isBefore(before), is(true));
+  }
+
+  @Test
+  public void randomPastLocalTime_WithMinLocalTime_ThrowsIllegalArgumentException() {
+    try {
+      randomPastLocalTime(LocalTime.MIN);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be after " + LocalTime.MIN));
+    }
+  }
+
+  @Test
+  public void randomPastLocalTime_WithNullLocalTime_ThrowsIllegalArgumentException() {
+    try {
+      randomPastLocalTime(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be non-null"));
+    }
+  }
+
+  @Test
   public void random_ReturnsValidValueForGivenTemporalField() {
     TemporalField field = RandomEnumUtils.random(ChronoField.class);
     long value = random(field);
@@ -819,14 +937,14 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastValue_ReturnsValueBeforeGiven() {
+  public void randomPast_ReturnsValueBeforeGiven() {
     ChronoField field = RandomEnumUtils.random(ChronoField.class);
     long before = randomFuture(field, field.range().getMinimum());
     assertThat(randomPast(field, before) < (before), is(true));
   }
 
   @Test
-  public void randomPastValue_WithMinValue_ThrowsIllegalArgumentException() {
+  public void randomPast_WithMinValue_ThrowsIllegalArgumentException() {
     ChronoField field = RandomEnumUtils.random(ChronoField.class);
     try {
       randomPast(field, field.range().getMinimum());

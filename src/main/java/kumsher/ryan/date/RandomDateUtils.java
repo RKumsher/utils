@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.*;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
+import static java.time.temporal.ChronoField.NANO_OF_DAY;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.MONTHS;
@@ -14,6 +15,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.MonthDay;
 import java.time.OffsetDateTime;
@@ -416,6 +418,59 @@ public final class RandomDateUtils {
     checkArgument(before != null, "Before must be non-null");
     checkArgument(before.isAfter(MIN_INSTANT), "Cannot produce date before %s", MIN_INSTANT);
     return randomInstant(MIN_INSTANT, before);
+  }
+
+  /**
+   * Returns a random {@link LocalTime}.
+   *
+   * @return the random {@link LocalTime}
+   */
+  public static LocalTime randomLocalTime() {
+    return LocalTime.ofNanoOfDay(random(NANO_OF_DAY));
+  }
+
+  /**
+   * Returns a random {@link LocalTime} within the specified range.
+   *
+   * @param startInclusive the earliest {@link LocalTime} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random {@link LocalTime}
+   * @throws IllegalArgumentException if startInclusive or endExclusive are null or if endExclusive
+   *     is earlier than startInclusive
+   */
+  public static LocalTime randomLocalTime(LocalTime startInclusive, LocalTime endExclusive) {
+    checkArgument(startInclusive != null, "Start must be non-null");
+    checkArgument(endExclusive != null, "End must be non-null");
+    long nanoOfDay = random(NANO_OF_DAY, startInclusive.toNanoOfDay(), endExclusive.toNanoOfDay());
+    return LocalTime.ofNanoOfDay(nanoOfDay);
+  }
+
+  /**
+   * Returns a random {@link LocalTime} that is after the given {@link LocalTime}.
+   *
+   * @param after the value that the returned {@link LocalTime} must be after
+   * @return the random {@link LocalTime}
+   * @throws IllegalArgumentException if after is null or if after is before {@link LocalTime#MAX}
+   */
+  public static LocalTime randomFutureLocalTime(LocalTime after) {
+    checkArgument(after != null, "After must be non-null");
+    checkArgument(after.isBefore(LocalTime.MAX), "After must be before %s", LocalTime.MAX);
+    long nanoOfDay = randomFuture(NANO_OF_DAY, after.toNanoOfDay() + 1);
+    return LocalTime.ofNanoOfDay(nanoOfDay);
+  }
+
+  /**
+   * Returns a random {@link LocalTime} that is before the given {@link LocalTime}.
+   *
+   * @param before the value that returned {@link LocalTime} must be before
+   * @return the random {@link LocalTime}
+   * @throws IllegalArgumentException if before is null or if before is after {@link LocalTime#MAX}
+   */
+  public static LocalTime randomPastLocalTime(LocalTime before) {
+    checkArgument(before != null, "Before must be non-null");
+    checkArgument(before.isAfter(LocalTime.MIN), "Before must be after %s", LocalTime.MIN);
+    long nanoOfDay = randomPast(NANO_OF_DAY, before.toNanoOfDay());
+    return LocalTime.ofNanoOfDay(nanoOfDay);
   }
 
   /**
