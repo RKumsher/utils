@@ -36,7 +36,10 @@ import kumsher.ryan.enums.RandomEnumUtils;
 
 /**
  * Utility library to return random dates, e.g., {@link Instant}s, {@link ZonedDateTime}s, {@link
- * LocalDate}s, etc..
+ * LocalDate}s, etc.
+ *
+ * <p>Note: Currently, all returned dates that contain a year field are limited to 4-digit years,
+ * i.e, 1,000 - 9,999. In future versions, a flag may be added to limit to 4-digit years or not.
  */
 public final class RandomDateUtils {
 
