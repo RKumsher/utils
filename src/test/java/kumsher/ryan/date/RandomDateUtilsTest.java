@@ -18,9 +18,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomDayOfWeek;
 import static kumsher.ryan.date.RandomDateUtils.randomDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedUtcClock;
-import static kumsher.ryan.date.RandomDateUtils.randomFourDigitYear;
 import static kumsher.ryan.date.RandomDateUtils.randomFuture;
-import static kumsher.ryan.date.RandomDateUtils.randomFutureFourDigitYear;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDateTime;
@@ -39,7 +37,6 @@ import static kumsher.ryan.date.RandomDateUtils.randomNegativeDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomNegativePeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPast;
-import static kumsher.ryan.date.RandomDateUtils.randomPastFourDigitYear;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
@@ -1095,7 +1092,7 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomYearMonth_ReturnsYearMonthWithFourDigitYear() {
+  public void randomYearMonth_ReturnsYearMonthWithYear() {
     YearMonth yearMonth = randomYearMonth();
     assertThat(yearMonth.getYear() >= 1_000, is(true));
     assertThat(yearMonth.getYear() < 10_000, is(true));
@@ -1220,39 +1217,39 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFourDigitYear_ReturnsRandomFourDigitYear() {
-    Year year = randomFourDigitYear();
+  public void randomYear_ReturnsRandomYear() {
+    Year year = RandomDateUtils.randomYear();
     assertTrue(year.isAfter(Year.of(999)));
     assertTrue(year.isBefore(Year.of(10_000)));
   }
 
   @Test
-  public void randomFourDigitYear_ReturnsFourDigitYearBetweenGivenYears() {
+  public void randomYear_ReturnsYearBetweenGivenYears() {
     Year start = Year.now(CLOCK).minus(1, YEARS);
     Year end = Year.now(CLOCK).plus(1, YEARS);
 
-    Year year = randomFourDigitYear(start, end);
+    Year year = RandomDateUtils.randomYear(start, end);
     assertTrue(year.isAfter(start) || year.equals(start));
     assertTrue(year.isBefore(end));
   }
 
   @Test
-  public void randomFourDigitYear_WithYearsOneYearApart_ReturnsStart() {
+  public void randomYear_WithYearsOneYearApart_ReturnsStart() {
     Year start = Year.now(CLOCK);
     Year end = Year.now(CLOCK).plus(1, YEARS);
-    assertThat(randomFourDigitYear(start, end), is(start));
+    assertThat(RandomDateUtils.randomYear(start, end), is(start));
   }
 
   @Test
-  public void randomFourDigitYear_WithEqualYears_ReturnsStartYear() {
+  public void randomYear_WithEqualYears_ReturnsStartYear() {
     Year monthDay = Year.now(CLOCK);
-    assertThat(randomFourDigitYear(monthDay, monthDay), is(monthDay));
+    assertThat(RandomDateUtils.randomYear(monthDay, monthDay), is(monthDay));
   }
 
   @Test
-  public void randomFourDigitYear_WithNullEndYear_ThrowsIllegalArgumentException() {
+  public void randomYear_WithNullEndYear_ThrowsIllegalArgumentException() {
     try {
-      randomFourDigitYear(Year.now(CLOCK), null);
+      RandomDateUtils.randomYear(Year.now(CLOCK), null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("End must be non-null"));
@@ -1260,9 +1257,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFourDigitYear_WithNullStartYear_ThrowsIllegalArgumentException() {
+  public void randomYear_WithNullStartYear_ThrowsIllegalArgumentException() {
     try {
-      randomFourDigitYear(null, Year.now(CLOCK));
+      RandomDateUtils.randomYear(null, Year.now(CLOCK));
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Start must be non-null"));
@@ -1270,11 +1267,11 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFourDigitYear_WithStartAfterEndYear_ThrowsIllegalArgumentException() {
+  public void randomYear_WithStartAfterEndYear_ThrowsIllegalArgumentException() {
     Year start = Year.now(CLOCK).plus(1, YEARS);
     Year end = Year.now(CLOCK).minus(1, YEARS);
     try {
-      randomFourDigitYear(start, end);
+      RandomDateUtils.randomYear(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("End must come on or after start"));
@@ -1282,11 +1279,11 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFourDigitYear_WithStartAfterMaxYear_ThrowsIllegalArgumentException() {
+  public void randomYear_WithStartAfterMaxYear_ThrowsIllegalArgumentException() {
     Year start = Year.of(10_000);
     Year end = start.plus(1, YEARS);
     try {
-      randomFourDigitYear(start, end);
+      RandomDateUtils.randomYear(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Start must before 10,000"));
@@ -1294,11 +1291,11 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFourDigitYear_WithEndBeforeMinYear_ThrowsIllegalArgumentException() {
+  public void randomYear_WithEndBeforeMinYear_ThrowsIllegalArgumentException() {
     Year start = Year.of(998);
     Year end = Year.of(999);
     try {
-      randomFourDigitYear(start, end);
+      RandomDateUtils.randomYear(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("End must be after 999"));
@@ -1306,15 +1303,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFutureFourDigitYear_WithAfterGiven_ReturnsYearAfterGiven() {
+  public void randomFutureYear_WithAfterGiven_ReturnsYearAfterGiven() {
     Year after = Year.now(CLOCK);
-    assertThat(randomFutureFourDigitYear(after).isAfter(after), is(true));
+    assertThat(RandomDateUtils.randomFutureYear(after).isAfter(after), is(true));
   }
 
   @Test
-  public void randomFutureFourDigitYear_WithMaxYear_ThrowsIllegalArgumentException() {
+  public void randomFutureYear_WithMaxYear_ThrowsIllegalArgumentException() {
     try {
-      randomFutureFourDigitYear(MAX_YEAR);
+      RandomDateUtils.randomFutureYear(MAX_YEAR);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("After must be before 9,999"));
@@ -1322,9 +1319,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFutureFourDigitYear_WithNullYear_ThrowsIllegalArgumentException() {
+  public void randomFutureYear_WithNullYear_ThrowsIllegalArgumentException() {
     try {
-      randomFutureFourDigitYear(null);
+      RandomDateUtils.randomFutureYear(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("After must be non-null"));
@@ -1332,21 +1329,21 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomFutureFourDigitYear_ReturnsYearAfterCurrentSystemClock() {
+  public void randomFutureYear_ReturnsYearAfterCurrentSystemClock() {
     Year now = Year.now(CLOCK);
-    assertThat(randomFutureFourDigitYear().isAfter(now), is(true));
+    assertThat(RandomDateUtils.randomFutureYear().isAfter(now), is(true));
   }
 
   @Test
-  public void randomPastFourDigitYear_WithBeforeGiven_ReturnsYearBeforeGiven() {
+  public void randomPastYear_WithBeforeGiven_ReturnsYearBeforeGiven() {
     Year before = Year.now(CLOCK);
-    assertThat(randomPastFourDigitYear(before).isBefore(before), is(true));
+    assertThat(RandomDateUtils.randomPastYear(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastFourDigitYear_WithMinYear_ThrowsIllegalArgumentException() {
+  public void randomPastYear_WithMinYear_ThrowsIllegalArgumentException() {
     try {
-      randomPastFourDigitYear(MIN_YEAR);
+      RandomDateUtils.randomPastYear(MIN_YEAR);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be after 1,000"));
@@ -1354,9 +1351,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastFourDigitYear_WithNullYear_ThrowsIllegalArgumentException() {
+  public void randomPastYear_WithNullYear_ThrowsIllegalArgumentException() {
     try {
-      randomPastFourDigitYear(null);
+      RandomDateUtils.randomPastYear(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -1364,9 +1361,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastFourDigitYear_ReturnsYearBeforeCurrentSystemClock() {
+  public void randomPastYear_ReturnsYearBeforeCurrentSystemClock() {
     Year now = Year.now(CLOCK);
-    assertThat(randomPastFourDigitYear().isBefore(now), is(true));
+    assertThat(RandomDateUtils.randomPastYear().isBefore(now), is(true));
   }
 
   @Test

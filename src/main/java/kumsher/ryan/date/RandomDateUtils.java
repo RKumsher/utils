@@ -706,7 +706,7 @@ public final class RandomDateUtils {
    * @return the random {@link YearMonth}
    */
   public static YearMonth randomYearMonth() {
-    return YearMonth.of(randomFourDigitYear().getValue(), randomMonth());
+    return YearMonth.of(randomYear().getValue(), randomMonth());
   }
 
   /**
@@ -780,7 +780,7 @@ public final class RandomDateUtils {
    *
    * @return the random {@link Year}
    */
-  public static Year randomFourDigitYear() {
+  public static Year randomYear() {
     return Year.of(RandomUtils.nextInt(1_000, 10_000));
   }
 
@@ -793,10 +793,10 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if startInclusive or endExclusive are null, if endExclusive is
    *     earlier than startInclusive, if either are before 1,000, or if either are after 9,999
    */
-  public static Year randomFourDigitYear(Year startInclusive, Year endExclusive) {
+  public static Year randomYear(Year startInclusive, Year endExclusive) {
     checkArgument(startInclusive != null, "Start must be non-null");
     checkArgument(endExclusive != null, "End must be non-null");
-    return randomFourDigitYear(startInclusive.getValue(), endExclusive.getValue());
+    return randomYear(startInclusive.getValue(), endExclusive.getValue());
   }
 
   /**
@@ -808,7 +808,7 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if endExclusive is earlier than startInclusive, if end is
    *     before 1,000, or if start is after 9,999
    */
-  public static Year randomFourDigitYear(int startInclusive, int endExclusive) {
+  public static Year randomYear(int startInclusive, int endExclusive) {
     checkArgument(startInclusive < 10_000, "Start must before 10,000");
     checkArgument(endExclusive > 999, "End must be after 999");
     checkArgument(!(startInclusive > endExclusive), "End must come on or after start");
@@ -820,8 +820,8 @@ public final class RandomDateUtils {
    *
    * @return the random {@link Year}
    */
-  public static Year randomFutureFourDigitYear() {
-    return randomFutureFourDigitYear(Year.now());
+  public static Year randomFutureYear() {
+    return randomFutureYear(Year.now());
   }
 
   /**
@@ -829,12 +829,11 @@ public final class RandomDateUtils {
    *
    * @param after the value that returned {@link Year} must be after
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if after is null, if after is equal to or after {@link
-   *     RandomDateUtils#MAX_INSTANT}, or if after >= 9,999
+   * @throws IllegalArgumentException if after is null or if after >= 9,999
    */
-  public static Year randomFutureFourDigitYear(Year after) {
+  public static Year randomFutureYear(Year after) {
     checkArgument(after != null, "After must be non-null");
-    return randomFutureFourDigitYear(after.getValue());
+    return randomFutureYear(after.getValue());
   }
 
   /**
@@ -842,10 +841,9 @@ public final class RandomDateUtils {
    *
    * @param after the value that returned {@link Year} must be after
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if after is equal to or after {@link
-   *     RandomDateUtils#MAX_INSTANT} or if after >= 9,999
+   * @throws IllegalArgumentException if after >= 9,999
    */
-  public static Year randomFutureFourDigitYear(int after) {
+  public static Year randomFutureYear(int after) {
     checkArgument(after < 9_999, "After must be before 9,999");
     return Year.of(RandomUtils.nextInt(after + 1, 9_999));
   }
@@ -855,8 +853,8 @@ public final class RandomDateUtils {
    *
    * @return the random {@link Year}
    */
-  public static Year randomPastFourDigitYear() {
-    return randomPastFourDigitYear(Year.now());
+  public static Year randomPastYear() {
+    return randomPastYear(Year.now());
   }
 
   /**
@@ -864,12 +862,11 @@ public final class RandomDateUtils {
    *
    * @param before the value that returned {@link Year} must be before
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if before is null, if before is equal to or before {@link
-   *     RandomDateUtils#MIN_INSTANT}, or if before is <= 1,000
+   * @throws IllegalArgumentException if before is null or if before is <= 1,000
    */
-  public static Year randomPastFourDigitYear(Year before) {
+  public static Year randomPastYear(Year before) {
     checkArgument(before != null, "Before must be non-null");
-    return randomPastFourDigitYear(before.getValue());
+    return randomPastYear(before.getValue());
   }
 
   /**
@@ -877,10 +874,9 @@ public final class RandomDateUtils {
    *
    * @param before the value that returned {@link Year} must be before
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if before is equal to or before {@link
-   *     RandomDateUtils#MIN_INSTANT}, or if before is <= 1,000
+   * @throws IllegalArgumentException if before is <= 1,000
    */
-  public static Year randomPastFourDigitYear(int before) {
+  public static Year randomPastYear(int before) {
     checkArgument(before > 1_000, "Before must be after 1,000");
     return Year.of(RandomUtils.nextInt(1_000, before));
   }
