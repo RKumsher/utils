@@ -88,7 +88,7 @@ public final class RandomDateUtils {
    * @return the random {@link ZonedDateTime}
    */
   public static ZonedDateTime randomFutureZonedDateTime() {
-    return randomFutureZonedDateTime(ZonedDateTime.now());
+    return randomZonedDateTimeAfter(ZonedDateTime.now());
   }
 
   /**
@@ -99,9 +99,9 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
    *     RandomDateUtils#MAX_INSTANT}
    */
-  public static ZonedDateTime randomFutureZonedDateTime(ZonedDateTime after) {
+  public static ZonedDateTime randomZonedDateTimeAfter(ZonedDateTime after) {
     checkArgument(after != null, "After must be non-null");
-    Instant instant = randomFutureInstant(after.toInstant());
+    Instant instant = randomInstantAfter(after.toInstant());
     return ZonedDateTime.ofInstant(instant, UTC);
   }
 
@@ -161,7 +161,7 @@ public final class RandomDateUtils {
    * @return the random {@link OffsetDateTime}
    */
   public static OffsetDateTime randomFutureOffsetDateTime() {
-    return randomFutureOffsetDateTime(OffsetDateTime.now());
+    return randomOffsetDateTimeAfter(OffsetDateTime.now());
   }
 
   /**
@@ -172,9 +172,9 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
    *     RandomDateUtils#MAX_INSTANT}
    */
-  public static OffsetDateTime randomFutureOffsetDateTime(OffsetDateTime after) {
+  public static OffsetDateTime randomOffsetDateTimeAfter(OffsetDateTime after) {
     checkArgument(after != null, "After must be non-null");
-    Instant instant = randomFutureInstant(after.toInstant());
+    Instant instant = randomInstantAfter(after.toInstant());
     return OffsetDateTime.ofInstant(instant, UTC);
   }
 
@@ -236,7 +236,7 @@ public final class RandomDateUtils {
    * @return the random {@link LocalDateTime}
    */
   public static LocalDateTime randomFutureLocalDateTime() {
-    return randomFutureLocalDateTime(LocalDateTime.now());
+    return randomLocalDateTimeAfter(LocalDateTime.now());
   }
 
   /**
@@ -247,9 +247,9 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
    *     RandomDateUtils#MAX_INSTANT}
    */
-  public static LocalDateTime randomFutureLocalDateTime(LocalDateTime after) {
+  public static LocalDateTime randomLocalDateTimeAfter(LocalDateTime after) {
     checkArgument(after != null, "After must be non-null");
-    Instant instant = randomFutureInstant(after.toInstant(UTC_OFFSET));
+    Instant instant = randomInstantAfter(after.toInstant(UTC_OFFSET));
     return LocalDateTime.ofInstant(instant, UTC);
   }
 
@@ -310,7 +310,7 @@ public final class RandomDateUtils {
    * @return the random {@link LocalDate}
    */
   public static LocalDate randomFutureLocalDate() {
-    return randomFutureLocalDate(LocalDate.now());
+    return randomLocalDateAfter(LocalDate.now());
   }
 
   /**
@@ -321,9 +321,9 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
    *     RandomDateUtils#MAX_INSTANT}
    */
-  public static LocalDate randomFutureLocalDate(LocalDate after) {
+  public static LocalDate randomLocalDateAfter(LocalDate after) {
     checkArgument(after != null, "After must be non-null");
-    Instant instant = randomFutureInstant(after.atStartOfDay(UTC).plus(1, DAYS).toInstant());
+    Instant instant = randomInstantAfter(after.atStartOfDay(UTC).plus(1, DAYS).toInstant());
     return instant.atZone(UTC).toLocalDate();
   }
 
@@ -383,7 +383,7 @@ public final class RandomDateUtils {
    * @return the random {@link Instant}
    */
   public static Instant randomFutureInstant() {
-    return randomFutureInstant(Instant.now());
+    return randomInstantAfter(Instant.now());
   }
 
   /**
@@ -394,7 +394,7 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
    *     RandomDateUtils#MAX_INSTANT}
    */
-  public static Instant randomFutureInstant(Instant after) {
+  public static Instant randomInstantAfter(Instant after) {
     checkArgument(after != null, "After must be non-null");
     checkArgument(after.isBefore(MAX_INSTANT), "Cannot produce date after %s", MAX_INSTANT);
     return randomInstant(after.plus(1, MILLIS), MAX_INSTANT);
@@ -455,10 +455,10 @@ public final class RandomDateUtils {
    * @return the random {@link LocalTime}
    * @throws IllegalArgumentException if after is null or if after is before {@link LocalTime#MAX}
    */
-  public static LocalTime randomFutureLocalTime(LocalTime after) {
+  public static LocalTime randomLocalTimeAfter(LocalTime after) {
     checkArgument(after != null, "After must be non-null");
     checkArgument(after.isBefore(LocalTime.MAX), "After must be before %s", LocalTime.MAX);
-    long nanoOfDay = randomFuture(NANO_OF_DAY, after.toNanoOfDay() + 1);
+    long nanoOfDay = randomAfter(NANO_OF_DAY, after.toNanoOfDay() + 1);
     return LocalTime.ofNanoOfDay(nanoOfDay);
   }
 
@@ -521,7 +521,7 @@ public final class RandomDateUtils {
   /**
    * Returns a random valid value for the given {@link TemporalField} between <code>
    * after</code> and <code>TemporalField.range().max()</code>. For example, <code>
-   * randomFuture({@link ChronoField#HOUR_OF_DAY}, 12)</code> will return a random value between
+   * randomAfter({@link ChronoField#HOUR_OF_DAY}, 12)</code> will return a random value between
    * 13-23.
    *
    * <p>Note: This will never return {@link Long#MAX_VALUE}. Even if it's a valid value for the
@@ -534,7 +534,7 @@ public final class RandomDateUtils {
    *     TemporalField.range().min()
    *     </code> or if after is on or after <code>TemporalField.range().max()</code>
    */
-  public static long randomFuture(TemporalField field, long after) {
+  public static long randomAfter(TemporalField field, long after) {
     Long min = field.range().getMinimum();
     Long max = field.range().getMaximum();
     checkArgument(after < max, "After must be before %s", max);
@@ -645,8 +645,8 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if after is null or if after is last day of year (December
    *     31st)
    */
-  public static MonthDay randomFutureMonthDay(MonthDay after) {
-    return randomFutureMonthDay(after, Year.now().isLeap());
+  public static MonthDay randomMonthDayAfter(MonthDay after) {
+    return randomMonthDayAfter(after, Year.now().isLeap());
   }
 
   /**
@@ -658,7 +658,7 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if after is null or if after is last day of year (December
    *     31st)
    */
-  public static MonthDay randomFutureMonthDay(MonthDay after, boolean includeLeapDay) {
+  public static MonthDay randomMonthDayAfter(MonthDay after, boolean includeLeapDay) {
     checkArgument(after != null, "After must be non-null");
     checkArgument(after.isBefore(MonthDay.of(DECEMBER, 31)), "After must be before December 31st");
     int year = includeLeapDay ? LEAP_YEAR : LEAP_YEAR - 1;
@@ -733,7 +733,7 @@ public final class RandomDateUtils {
    * @return the random {@link YearMonth}
    */
   public static YearMonth randomFutureYearMonth() {
-    return randomFutureYearMonth(YearMonth.now());
+    return randomYearMonthAfter(YearMonth.now());
   }
 
   /**
@@ -744,10 +744,10 @@ public final class RandomDateUtils {
    * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
    *     RandomDateUtils#MAX_INSTANT}
    */
-  public static YearMonth randomFutureYearMonth(YearMonth after) {
+  public static YearMonth randomYearMonthAfter(YearMonth after) {
     checkArgument(after != null, "After must be non-null");
     LocalDate start = after.plus(1, MONTHS).atDay(1);
-    LocalDate localDate = randomFutureLocalDate(start);
+    LocalDate localDate = randomLocalDateAfter(start);
     return YearMonth.of(localDate.getYear(), localDate.getMonth());
   }
 
@@ -821,7 +821,7 @@ public final class RandomDateUtils {
    * @return the random {@link Year}
    */
   public static Year randomFutureYear() {
-    return randomFutureYear(Year.now());
+    return randomYearAfter(Year.now());
   }
 
   /**
@@ -831,9 +831,9 @@ public final class RandomDateUtils {
    * @return the random {@link Year}
    * @throws IllegalArgumentException if after is null or if after >= 9,999
    */
-  public static Year randomFutureYear(Year after) {
+  public static Year randomYearAfter(Year after) {
     checkArgument(after != null, "After must be non-null");
-    return randomFutureYear(after.getValue());
+    return randomYearAfter(after.getValue());
   }
 
   /**
@@ -843,7 +843,7 @@ public final class RandomDateUtils {
    * @return the random {@link Year}
    * @throws IllegalArgumentException if after >= 9,999
    */
-  public static Year randomFutureYear(int after) {
+  public static Year randomYearAfter(int after) {
     checkArgument(after < 9_999, "After must be before 9,999");
     return Year.of(RandomUtils.nextInt(after + 1, 9_999));
   }
