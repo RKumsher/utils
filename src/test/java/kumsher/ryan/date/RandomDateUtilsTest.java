@@ -15,6 +15,7 @@ import static kumsher.ryan.date.RandomDateUtils.MIN_INSTANT;
 import static kumsher.ryan.date.RandomDateUtils.isLeapDay;
 import static kumsher.ryan.date.RandomDateUtils.random;
 import static kumsher.ryan.date.RandomDateUtils.randomAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomDayOfWeek;
 import static kumsher.ryan.date.RandomDateUtils.randomDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedClock;
@@ -28,25 +29,28 @@ import static kumsher.ryan.date.RandomDateUtils.randomFutureYearMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomInstantAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomInstantBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomLocalDateBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTimeAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomLocalDateTimeBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalTime;
 import static kumsher.ryan.date.RandomDateUtils.randomLocalTimeAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomLocalTimeBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomMonthDayAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomMonthDayBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomNegativeDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomNegativePeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTimeAfter;
-import static kumsher.ryan.date.RandomDateUtils.randomPast;
+import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTimeBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
-import static kumsher.ryan.date.RandomDateUtils.randomPastLocalTime;
-import static kumsher.ryan.date.RandomDateUtils.randomPastMonthDay;
 import static kumsher.ryan.date.RandomDateUtils.randomPastOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomPastYear;
 import static kumsher.ryan.date.RandomDateUtils.randomPastYearMonth;
@@ -56,12 +60,15 @@ import static kumsher.ryan.date.RandomDateUtils.randomPositiveDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomPositivePeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomYear;
 import static kumsher.ryan.date.RandomDateUtils.randomYearAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomYearBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomYearMonth;
 import static kumsher.ryan.date.RandomDateUtils.randomYearMonthAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomYearMonthBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneId;
 import static kumsher.ryan.date.RandomDateUtils.randomZoneOffset;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTimeAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomZonedDateTimeBefore;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.isOneOf;
@@ -208,15 +215,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastZonedDateTime_WithBeforeGiven_ReturnsZonedDateTimeBeforeGiven() {
+  public void randomZonedDateTimeBefore_ReturnsZonedDateTimeBeforeGiven() {
     ZonedDateTime before = ZonedDateTime.now(CLOCK);
-    assertThat(randomPastZonedDateTime(before).isBefore(before), is(true));
+    assertThat(randomZonedDateTimeBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastZonedDateTime_WithMinZonedDateTime_ThrowsIllegalArgumentException() {
+  public void randomZonedDateTimeBefore_WithMinZonedDateTime_ThrowsIllegalArgumentException() {
     try {
-      randomPastZonedDateTime(MIN_ZONED_DATE_TIME);
+      randomZonedDateTimeBefore(MIN_ZONED_DATE_TIME);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
@@ -224,9 +231,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastZonedDateTime_WithNullZonedDateTime_ThrowsIllegalArgumentException() {
+  public void randomZonedDateTimeBefore_WithNullZonedDateTime_ThrowsIllegalArgumentException() {
     try {
-      randomPastZonedDateTime(null);
+      randomZonedDateTimeBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -337,15 +344,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastOffsetDateTime_WithBeforeGiven_ReturnsOffsetDateTimeBeforeGiven() {
+  public void randomOffsetDateTimeBefore_ReturnsOffsetDateTimeBeforeGiven() {
     OffsetDateTime before = OffsetDateTime.now(CLOCK);
-    assertThat(randomPastOffsetDateTime(before).isBefore(before), is(true));
+    assertThat(randomOffsetDateTimeBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastOffsetDateTime_WithMinOffsetDateTime_ThrowsIllegalArgumentException() {
+  public void randomOffsetDateTimeBefore_WithMinOffsetDateTime_ThrowsIllegalArgumentException() {
     try {
-      randomPastOffsetDateTime(MIN_OFFSET_DATE_TIME);
+      randomOffsetDateTimeBefore(MIN_OFFSET_DATE_TIME);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
@@ -353,9 +360,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastOffsetDateTime_WithNullOffsetDateTime_ThrowsIllegalArgumentException() {
+  public void randomOffsetDateTimeBefore_WithNullOffsetDateTime_ThrowsIllegalArgumentException() {
     try {
-      randomPastOffsetDateTime(null);
+      randomOffsetDateTimeBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -465,15 +472,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastLocalDateTime_WithBeforeGiven_ReturnsLocalDateTimeBeforeGiven() {
+  public void randomLocalDateTimeBefore_ReturnsLocalDateTimeBeforeGiven() {
     LocalDateTime before = LocalDateTime.now(CLOCK);
-    assertThat(randomPastLocalDateTime(before).isBefore(before), is(true));
+    assertThat(randomLocalDateTimeBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastLocalDateTime_WithMinLocalDateTime_ThrowsIllegalArgumentException() {
+  public void randomLocalDateTimeBefore_WithMinLocalDateTime_ThrowsIllegalArgumentException() {
     try {
-      randomPastLocalDateTime(MIN_LOCAL_DATE_TIME);
+      randomLocalDateTimeBefore(MIN_LOCAL_DATE_TIME);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
@@ -481,9 +488,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastLocalDateTime_WithNullLocalDateTime_ThrowsIllegalArgumentException() {
+  public void randomLocalDateTimeBefore_WithNullLocalDateTime_ThrowsIllegalArgumentException() {
     try {
-      randomPastLocalDateTime(null);
+      randomLocalDateTimeBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -591,15 +598,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastLocalDate_WithBeforeGiven_ReturnsLocalDateBeforeGiven() {
+  public void randomLocalDateBefore_ReturnsLocalDateBeforeGiven() {
     LocalDate before = LocalDate.now(CLOCK);
-    assertThat(randomPastLocalDate(before).isBefore(before), is(true));
+    assertThat(randomLocalDateBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastLocalDate_WithMinLocalDate_ThrowsIllegalArgumentException() {
+  public void randomLocalDateBefore_WithMinLocalDate_ThrowsIllegalArgumentException() {
     try {
-      randomPastLocalDate(MIN_LOCAL_DATE);
+      randomLocalDateBefore(MIN_LOCAL_DATE);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
@@ -607,9 +614,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastLocalDate_WithNullLocalDate_ThrowsIllegalArgumentException() {
+  public void randomLocalDateBefore_WithNullLocalDate_ThrowsIllegalArgumentException() {
     try {
-      randomPastLocalDate(null);
+      randomLocalDateBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -717,15 +724,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastInstant_WithBeforeGiven_ReturnsInstantBeforeGiven() {
+  public void randomInstantBefore_ReturnsInstantBeforeGiven() {
     Instant before = Instant.now(CLOCK);
-    assertThat(randomPastInstant(before).isBefore(before), is(true));
+    assertThat(randomInstantBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastInstant_WithMinInstant_ThrowsIllegalArgumentException() {
+  public void randomInstantBefore_WithMinInstant_ThrowsIllegalArgumentException() {
     try {
-      randomPastInstant(MIN_INSTANT);
+      randomInstantBefore(MIN_INSTANT);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
@@ -733,9 +740,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastInstant_WithNullInstant_ThrowsIllegalArgumentException() {
+  public void randomInstantBefore_WithNullInstant_ThrowsIllegalArgumentException() {
     try {
-      randomPastInstant(null);
+      randomInstantBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -835,15 +842,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastLocalTime_ReturnsLocalTimeBeforeGiven() {
+  public void randomLocalTimeBefore_ReturnsLocalTimeBeforeGiven() {
     LocalTime before = LocalTime.NOON;
-    assertThat(randomPastLocalTime(before).isBefore(before), is(true));
+    assertThat(randomLocalTimeBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastLocalTime_WithMinLocalTime_ThrowsIllegalArgumentException() {
+  public void randomLocalTimeBefore_WithMinLocalTime_ThrowsIllegalArgumentException() {
     try {
-      randomPastLocalTime(LocalTime.MIN);
+      randomLocalTimeBefore(LocalTime.MIN);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be after " + LocalTime.MIN));
@@ -851,9 +858,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastLocalTime_WithNullLocalTime_ThrowsIllegalArgumentException() {
+  public void randomLocalTimeBefore_WithNullLocalTime_ThrowsIllegalArgumentException() {
     try {
-      randomPastLocalTime(null);
+      randomLocalTimeBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -914,7 +921,7 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void random_WithAfterMax_ThrowsIllegalArgumentException() {
+  public void random_WithEndAfterMax_ThrowsIllegalArgumentException() {
     long start = 1;
     long end = SECOND_OF_MINUTE.range().getMaximum() + 1;
     try {
@@ -928,7 +935,7 @@ public class RandomDateUtilsTest {
   @Test
   public void randomAfter_ReturnsValueAfterGiven() {
     ChronoField field = RandomEnumUtils.random(ChronoField.class);
-    long after = randomPast(field, field.range().getMaximum());
+    long after = randomBefore(field, field.range().getMaximum());
     assertThat(randomAfter(field, after) > after, is(true));
   }
 
@@ -944,17 +951,17 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPast_ReturnsValueBeforeGiven() {
+  public void randomBefore_ReturnsValueBeforeGiven() {
     ChronoField field = RandomEnumUtils.random(ChronoField.class);
     long before = randomAfter(field, field.range().getMinimum());
-    assertThat(randomPast(field, before) < (before), is(true));
+    assertThat(randomBefore(field, before) < (before), is(true));
   }
 
   @Test
-  public void randomPast_WithMinValue_ThrowsIllegalArgumentException() {
+  public void randomBefore_WithMinValue_ThrowsIllegalArgumentException() {
     ChronoField field = RandomEnumUtils.random(ChronoField.class);
     try {
-      randomPast(field, field.range().getMinimum());
+      randomBefore(field, field.range().getMinimum());
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be after " + field.range().getMinimum()));
@@ -1076,15 +1083,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastMonthDay_ReturnsMonthDayBeforeGiven() {
+  public void randomMonthDayBefore_ReturnsMonthDayBeforeGiven() {
     MonthDay before = MonthDay.now(CLOCK);
-    assertThat(randomPastMonthDay(before).isBefore(before), is(true));
+    assertThat(randomMonthDayBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastMonthDay_WithMinMonthDay_ThrowsIllegalArgumentException() {
+  public void randomMonthDayBefore_WithMinMonthDay_ThrowsIllegalArgumentException() {
     try {
-      randomPastMonthDay(MIN_MONTH_DAY);
+      randomMonthDayBefore(MIN_MONTH_DAY);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be after January 1st"));
@@ -1092,9 +1099,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastMonthDay_WithNullMonthDay_ThrowsIllegalArgumentException() {
+  public void randomMonthDayBefore_WithNullMonthDay_ThrowsIllegalArgumentException() {
     try {
-      randomPastMonthDay(null);
+      randomMonthDayBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -1195,15 +1202,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastYearMonth_WithBeforeGiven_ReturnsYearMonthBeforeGiven() {
+  public void randomYearMonthBefore_ReturnsYearMonthBeforeGiven() {
     YearMonth before = YearMonth.now(CLOCK);
-    assertThat(randomPastYearMonth(before).isBefore(before), is(true));
+    assertThat(randomYearMonthBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastYearMonth_WithMinYearMonth_ThrowsIllegalArgumentException() {
+  public void randomYearMonthBefore_WithMinYearMonth_ThrowsIllegalArgumentException() {
     try {
-      randomPastYearMonth(MIN_YEAR_MONTH);
+      randomYearMonthBefore(MIN_YEAR_MONTH);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
@@ -1211,9 +1218,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastYearMonth_WithNullYearMonth_ThrowsIllegalArgumentException() {
+  public void randomYearMonthBefore_WithNullYearMonth_ThrowsIllegalArgumentException() {
     try {
-      randomPastYearMonth(null);
+      randomYearMonthBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
@@ -1345,15 +1352,15 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastYear_WithBeforeGiven_ReturnsYearBeforeGiven() {
+  public void randomYearBefore_ReturnsYearBeforeGiven() {
     Year before = Year.now(CLOCK);
-    assertThat(randomPastYear(before).isBefore(before), is(true));
+    assertThat(randomYearBefore(before).isBefore(before), is(true));
   }
 
   @Test
-  public void randomPastYear_WithMinYear_ThrowsIllegalArgumentException() {
+  public void randomYearBefore_WithMinYear_ThrowsIllegalArgumentException() {
     try {
-      randomPastYear(MIN_YEAR);
+      randomYearBefore(MIN_YEAR);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be after 1,000"));
@@ -1361,9 +1368,9 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void randomPastYear_WithNullYear_ThrowsIllegalArgumentException() {
+  public void randomYearBefore_WithNullYear_ThrowsIllegalArgumentException() {
     try {
-      randomPastYear(null);
+      randomYearBefore(null);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be non-null"));
