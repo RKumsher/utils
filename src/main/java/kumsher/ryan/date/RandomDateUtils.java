@@ -27,6 +27,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
+import java.util.Date;
 import java.util.Random;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -349,6 +350,80 @@ public final class RandomDateUtils {
     checkArgument(before != null, "Before must be non-null");
     Instant instant = randomInstantBefore(before.atStartOfDay(UTC).toInstant());
     return instant.atZone(UTC).toLocalDate();
+  }
+
+  /**
+   * Returns a random {@link Date} between {@link RandomDateUtils#MIN_INSTANT} and {@link
+   * RandomDateUtils#MAX_INSTANT}.
+   *
+   * @return the random {@link Date}
+   */
+  public static Date randomDate() {
+    return Date.from(randomInstant());
+  }
+
+  /**
+   * Returns a random {@link Date} within the specified range.
+   *
+   * @param startInclusive the earliest {@link Date} that can be returned
+   * @param endExclusive the upper bound (not included)
+   * @return the random {@link Date}
+   * @throws IllegalArgumentException if startInclusive or endExclusive are null or if endExclusive
+   *     is earlier than startInclusive
+   */
+  public static Date randomDate(Date startInclusive, Date endExclusive) {
+    checkArgument(startInclusive != null, "Start must be non-null");
+    checkArgument(endExclusive != null, "End must be non-null");
+    Instant startInstant = startInclusive.toInstant();
+    Instant endInstant = endExclusive.toInstant();
+    Instant instant = randomInstant(startInstant, endInstant);
+    return Date.from(instant);
+  }
+
+  /**
+   * Returns a random {@link Date} that is after the current system clock.
+   *
+   * @return the random {@link Date}
+   */
+  public static Date randomFutureDate() {
+    return randomDateAfter(new Date());
+  }
+
+  /**
+   * Returns a random {@link Date} that is after the given {@link Date}.
+   *
+   * @param after the value that returned {@link Date} must be after
+   * @return the random {@link Date}
+   * @throws IllegalArgumentException if after is null or if after is equal to or after {@link
+   *     RandomDateUtils#MAX_INSTANT}
+   */
+  public static Date randomDateAfter(Date after) {
+    checkArgument(after != null, "After must be non-null");
+    Instant instant = randomInstantAfter(after.toInstant());
+    return Date.from(instant);
+  }
+
+  /**
+   * Returns a random {@link Date} that is before the current system clock.
+   *
+   * @return the random {@link Date}
+   */
+  public static Date randomPastDate() {
+    return randomDateBefore(new Date());
+  }
+
+  /**
+   * Returns a random {@link Date} that is before the given {@link Date}.
+   *
+   * @param before the value that returned {@link Date} must be before
+   * @return the random {@link Date}
+   * @throws IllegalArgumentException if before is null or if before is equal to or before {@link
+   *     RandomDateUtils#MIN_INSTANT}
+   */
+  public static Date randomDateBefore(Date before) {
+    checkArgument(before != null, "Before must be non-null");
+    Instant instant = randomInstantBefore(before.toInstant());
+    return Date.from(instant);
   }
 
   /**

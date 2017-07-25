@@ -16,10 +16,14 @@ import static kumsher.ryan.date.RandomDateUtils.isLeapDay;
 import static kumsher.ryan.date.RandomDateUtils.random;
 import static kumsher.ryan.date.RandomDateUtils.randomAfter;
 import static kumsher.ryan.date.RandomDateUtils.randomBefore;
+import static kumsher.ryan.date.RandomDateUtils.randomDate;
+import static kumsher.ryan.date.RandomDateUtils.randomDateAfter;
+import static kumsher.ryan.date.RandomDateUtils.randomDateBefore;
 import static kumsher.ryan.date.RandomDateUtils.randomDayOfWeek;
 import static kumsher.ryan.date.RandomDateUtils.randomDuration;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedClock;
 import static kumsher.ryan.date.RandomDateUtils.randomFixedUtcClock;
+import static kumsher.ryan.date.RandomDateUtils.randomFutureDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomFutureLocalDateTime;
@@ -48,6 +52,7 @@ import static kumsher.ryan.date.RandomDateUtils.randomNegativePeriod;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTime;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTimeAfter;
 import static kumsher.ryan.date.RandomDateUtils.randomOffsetDateTimeBefore;
+import static kumsher.ryan.date.RandomDateUtils.randomPastDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastInstant;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDate;
 import static kumsher.ryan.date.RandomDateUtils.randomPastLocalDateTime;
@@ -92,7 +97,9 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
+import java.util.Date;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 
 import kumsher.ryan.enums.RandomEnumUtils;
@@ -117,6 +124,8 @@ public class RandomDateUtilsTest {
   private static final Year MIN_YEAR = Year.of(1_000);
   private static final YearMonth MAX_YEAR_MONTH = YearMonth.of(9_999, DECEMBER);
   private static final YearMonth MIN_YEAR_MONTH = YearMonth.of(1_000, JANUARY);
+  private static final Date MIN_DATE = Date.from(MIN_INSTANT);
+  private static final Date MAX_DATE = Date.from(MAX_INSTANT);
 
   @Test
   public void randomZonedDateTime_ReturnsZonedDateTimeBetweenMinAndMaxInstants() {
@@ -627,6 +636,132 @@ public class RandomDateUtilsTest {
   public void randomPastLocalDate_ReturnsLocalDateBeforeCurrentSystemClock() {
     LocalDate now = LocalDate.now(CLOCK);
     assertThat(randomPastLocalDate().isBefore(now), is(true));
+  }
+
+  @Test
+  public void randomDate_ReturnsDateBetweenMinAndMaxInstants() {
+    Date randomDate = randomDate();
+    assertTrue(randomDate.after(MIN_DATE) || randomDate.equals(MIN_DATE));
+    assertTrue(randomDate.before(MAX_DATE));
+  }
+
+  @Test
+  public void randomDate_ReturnsDateBetweenGivenDates() {
+    Date start = DateUtils.addDays(new Date(), -1);
+    Date end = DateUtils.addDays(new Date(), 1);
+
+    Date zonedDateTime = randomDate(start, end);
+    assertTrue(zonedDateTime.after(start) || zonedDateTime.equals(start));
+    assertTrue(zonedDateTime.before(end));
+  }
+
+  @Test
+  public void randomDate_WithDatesOneMillisecondApart_ReturnsStart() {
+    Date start = new Date();
+    Date end = DateUtils.addMilliseconds(start, 1);
+    assertThat(randomDate(start, end), is(start));
+  }
+
+  @Test
+  public void randomDate_WithEqualDates_ReturnsStartDate() {
+    Date zonedDateTime = new Date();
+    assertThat(randomDate(zonedDateTime, zonedDateTime), is(zonedDateTime));
+  }
+
+  @Test
+  public void randomDate_WithNullEndDate_ThrowsIllegalArgumentException() {
+    try {
+      randomDate(new Date(), null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomDate_WithNullStartDate_ThrowsIllegalArgumentException() {
+    try {
+      randomDate(null, new Date());
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomDate_WithStartAfterEndDate_ThrowsIllegalArgumentException() {
+    Date start = DateUtils.addDays(new Date(), 1);
+    Date end = DateUtils.addDays(new Date(), -1);
+    try {
+      randomDate(start, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must come on or after start"));
+    }
+  }
+
+  @Test
+  public void randomDateAfter_ReturnsDateAfterGiven() {
+    Date after = new Date();
+    assertThat(randomDateAfter(after).after(after), is(true));
+  }
+
+  @Test
+  public void randomDateAfter_WithMaxDate_ThrowsIllegalArgumentException() {
+    try {
+      randomDateAfter(MAX_DATE);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Cannot produce date after " + MAX_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomDateAfter_WithNullDate_ThrowsIllegalArgumentException() {
+    try {
+      randomDateAfter(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomFutureDate_ReturnsDateAfterCurrentSystemClock() {
+    Date now = new Date();
+    assertThat(randomFutureDate().after(now), is(true));
+  }
+
+  @Test
+  public void randomDateBefore_ReturnsDateBeforeGiven() {
+    Date before = new Date();
+    assertThat(randomDateBefore(before).before(before), is(true));
+  }
+
+  @Test
+  public void randomDateBefore_WithMinDate_ThrowsIllegalArgumentException() {
+    try {
+      randomDateBefore(MIN_DATE);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Cannot produce date before " + MIN_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomDateBefore_WithNullDate_ThrowsIllegalArgumentException() {
+    try {
+      randomDateBefore(null);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be non-null"));
+    }
+  }
+
+  @Test
+  public void randomPastDate_ReturnsDateBeforeCurrentSystemClock() {
+    Date now = new Date();
+    assertThat(randomPastDate().before(now), is(true));
   }
 
   @Test
