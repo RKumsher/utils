@@ -43,6 +43,7 @@ import kumsher.ryan.enums.RandomEnumUtils;
  */
 public final class RandomDateUtils {
 
+  private static final Random RANDOM = new Random();
   private static final ZoneId UTC = ZoneId.of("UTC").normalized();
   private static final ZoneOffset UTC_OFFSET = ZoneOffset.UTC;
   private static final int LEAP_YEAR = 2004;
@@ -1012,7 +1013,7 @@ public final class RandomDateUtils {
     if (startInclusive == endExclusive) {
       return startInclusive;
     }
-    return new Random().longs(1, startInclusive, endExclusive).sum();
+    return RANDOM.longs(1, startInclusive, endExclusive).sum();
   }
 
   private static long randomPositiveLong() {
