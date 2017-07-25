@@ -1058,7 +1058,7 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomMonthDayAfter_ReturnsMonthDayAfterGiven() {
-    MonthDay after = MonthDay.now(CLOCK);
+    MonthDay after = randomMonthDayBefore(MAX_MONTH_DAY);
     assertThat(randomMonthDayAfter(after).isAfter(after), is(true));
   }
 
@@ -1084,7 +1084,7 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomMonthDayBefore_ReturnsMonthDayBeforeGiven() {
-    MonthDay before = MonthDay.now(CLOCK);
+    MonthDay before = randomMonthDayAfter(MIN_MONTH_DAY);
     assertThat(randomMonthDayBefore(before).isBefore(before), is(true));
   }
 
