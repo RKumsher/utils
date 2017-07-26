@@ -19,11 +19,11 @@ public final class RandomCollectionUtils {
   private RandomCollectionUtils() {}
 
   /**
-   * Returns a random list filled with the given elements.
+   * Returns a list filled randomly from the given elements.
    *
-   * @param elements elements to fill list from
+   * @param elements elements to randomly fill list from
    * @param size range that the size of the collection will be randomly chosen from
-   * @return random list filled with the given elements
+   * @return list filled randomly from the given elements
    * @throws IllegalArgumentException if the elements to fill list from is empty or if the size
    *     range contains negative integers
    */
@@ -33,11 +33,11 @@ public final class RandomCollectionUtils {
   }
 
   /**
-   * Returns a random list filled with the given elements.
+   * Returns a list filled randomly from the given elements.
    *
-   * @param elements elements to fill list from
+   * @param elements elements to randomly fill list from
    * @param size of the random collection to return
-   * @return random list filled with the given elements
+   * @return list filled randomly from the given elements
    * @throws IllegalArgumentException if the elements to fill list from is empty or if the size is
    *     negative
    */
@@ -47,11 +47,11 @@ public final class RandomCollectionUtils {
   }
 
   /**
-   * Returns a random list filled from the given element supplier.
+   * Returns a list filled from the given element supplier.
    *
    * @param elementSupplier element supplier to fill list from
    * @param size range that the size of the collection will be randomly chosen from
-   * @return random list filled with the given elements
+   * @return list filled from the given elements
    * @throws IllegalArgumentException if the size range contains negative integers
    */
   public static <T> List<T> randomListFrom(Supplier<T> elementSupplier, Range<Integer> size) {
@@ -64,11 +64,11 @@ public final class RandomCollectionUtils {
   }
 
   /**
-   * Returns a random list filled from the given element supplier.
+   * Returns a list filled from the given element supplier.
    *
    * @param elementSupplier element supplier to fill list from
    * @param size of the random collection to return
-   * @return random list filled with the given elements
+   * @return list filled from the given elements
    * @throws IllegalArgumentException if the size is negative
    */
   public static <T> List<T> randomListFrom(Supplier<T> elementSupplier, int size) {

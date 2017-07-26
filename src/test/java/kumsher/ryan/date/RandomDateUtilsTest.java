@@ -120,10 +120,10 @@ public class RandomDateUtilsTest {
   private static final LocalDate MAX_LOCAL_DATE = MAX_LOCAL_DATE_TIME.toLocalDate();
   private static final MonthDay MIN_MONTH_DAY = MonthDay.of(JANUARY, 1);
   private static final MonthDay MAX_MONTH_DAY = MonthDay.of(DECEMBER, 31);
-  private static final Year MAX_YEAR = Year.of(9_999);
-  private static final Year MIN_YEAR = Year.of(1_000);
-  private static final YearMonth MAX_YEAR_MONTH = YearMonth.of(9_999, DECEMBER);
-  private static final YearMonth MIN_YEAR_MONTH = YearMonth.of(1_000, JANUARY);
+  private static final Year MAX_YEAR = Year.of(9999);
+  private static final Year MIN_YEAR = Year.of(1970);
+  private static final YearMonth MAX_YEAR_MONTH = YearMonth.of(9999, DECEMBER);
+  private static final YearMonth MIN_YEAR_MONTH = YearMonth.of(1970, JANUARY);
   private static final Date MIN_DATE = Date.from(MIN_INSTANT);
   private static final Date MAX_DATE = Date.from(MAX_INSTANT);
 
@@ -1438,7 +1438,7 @@ public class RandomDateUtilsTest {
       randomYear(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("Start must before 10,000"));
+      assertThat(ex.getMessage(), is("Start must before 9999"));
     }
   }
 
@@ -1450,7 +1450,7 @@ public class RandomDateUtilsTest {
       randomYear(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must be after 999"));
+      assertThat(ex.getMessage(), is("End must be after 1970"));
     }
   }
 
@@ -1466,7 +1466,7 @@ public class RandomDateUtilsTest {
       randomYearAfter(MAX_YEAR);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("After must be before 9,999"));
+      assertThat(ex.getMessage(), is("After must be before 9999"));
     }
   }
 
@@ -1498,7 +1498,7 @@ public class RandomDateUtilsTest {
       randomYearBefore(MIN_YEAR);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("Before must be after 1,000"));
+      assertThat(ex.getMessage(), is("Before must be after 1970"));
     }
   }
 

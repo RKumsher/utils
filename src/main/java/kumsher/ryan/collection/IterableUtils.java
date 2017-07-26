@@ -21,6 +21,7 @@ public final class IterableUtils {
    *
    * @param iterable {@link Iterable} to return random element from
    * @return random element from the given {@link Iterable}
+   * @throws IllegalArgumentException if the iterable is empty
    */
   public static <T> T randomFrom(Iterable<T> iterable) {
     checkArgument(!Iterables.isEmpty(iterable), "Iterable cannot be empty");
@@ -34,6 +35,7 @@ public final class IterableUtils {
    * @param iterable {@link Iterable} to return random element from
    * @param excludes values to exclude
    * @return random element from the given {@link Iterable} that's not in the values to exclude
+   * @throws IllegalArgumentException if the iterable is empty
    */
   public static <T> T randomFrom(Iterable<T> iterable, T... excludes) {
     return randomFrom(iterable, Arrays.asList(excludes));
@@ -45,6 +47,7 @@ public final class IterableUtils {
    * @param iterable {@link Iterable} to return random element from
    * @param excludes values to exclude
    * @return random element from the given {@link Iterable} that's not in the values to exclude
+   * @throws IllegalArgumentException if the iterable is empty
    */
   public static <T> T randomFrom(Iterable<T> iterable, Collection<T> excludes) {
     checkArgument(!Iterables.isEmpty(iterable), "Iterable cannot be empty");
