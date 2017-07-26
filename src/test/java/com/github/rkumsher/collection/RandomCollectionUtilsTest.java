@@ -1,6 +1,6 @@
-package kumsher.ryan.collection;
+package com.github.rkumsher.collection;
 
-import static kumsher.ryan.collection.RandomCollectionUtils.randomListFrom;
+import static com.github.rkumsher.collection.RandomCollectionUtils.randomListFrom;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasSize;

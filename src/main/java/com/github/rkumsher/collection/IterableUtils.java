@@ -1,4 +1,4 @@
-package kumsher.ryan.collection;
+package com.github.rkumsher.collection;
 
 import static com.google.common.base.Preconditions.*;
 

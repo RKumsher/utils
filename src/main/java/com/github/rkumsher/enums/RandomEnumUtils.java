@@ -1,9 +1,9 @@
-package kumsher.ryan.enums;
+package com.github.rkumsher.enums;
 
 import java.util.Collection;
 import java.util.EnumSet;
 
-import kumsher.ryan.collection.IterableUtils;
+import com.github.rkumsher.collection.IterableUtils;
 
 /** Utility library to retrieve random elements from enum instances. */
 public final class RandomEnumUtils {

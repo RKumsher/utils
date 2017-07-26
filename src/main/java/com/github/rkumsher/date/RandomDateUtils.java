@@ -1,4 +1,4 @@
-package kumsher.ryan.date;
+package com.github.rkumsher.date;
 
 import static com.google.common.base.Preconditions.*;
 import static java.time.Month.DECEMBER;
@@ -32,8 +32,8 @@ import java.util.Random;
 
 import org.apache.commons.lang3.RandomUtils;
 
-import kumsher.ryan.collection.IterableUtils;
-import kumsher.ryan.enums.RandomEnumUtils;
+import com.github.rkumsher.collection.IterableUtils;
+import com.github.rkumsher.enums.RandomEnumUtils;
 
 /**
  * Utility library to return random dates, e.g., {@link Instant}s, {@link ZonedDateTime}s, {@link

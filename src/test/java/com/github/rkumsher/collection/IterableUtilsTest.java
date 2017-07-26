@@ -1,6 +1,5 @@
-package kumsher.ryan.collection;
+package com.github.rkumsher.collection;
 
-import static kumsher.ryan.collection.IterableUtils.randomFrom;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.sameInstance;
@@ -19,7 +18,7 @@ public class IterableUtilsTest {
   @Test
   public void randomFrom_WithEmptyCollection_ThrowsIllegalArgumentException() {
     try {
-      randomFrom(Collections.emptyList());
+      IterableUtils.randomFrom(Collections.emptyList());
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Iterable cannot be empty"));
@@ -30,20 +29,20 @@ public class IterableUtilsTest {
   public void randomFrom_WithSingletonCollection_ReturnsOnlyElement() {
     Object onlyElement = new Object();
     Iterable<Object> singletonCollection = Collections.singleton(onlyElement);
-    assertThat(randomFrom(singletonCollection), sameInstance(onlyElement));
+    assertThat(IterableUtils.randomFrom(singletonCollection), sameInstance(onlyElement));
   }
 
   @Test
   public void randomFrom_ReturnsElementFromGivenCollection() {
     Collection<Object> collection = Lists.newArrayList(new Object(), new Object());
-    assertThat(randomFrom(collection), isIn(collection));
+    assertThat(IterableUtils.randomFrom(collection), isIn(collection));
   }
 
   @Test
   public void randomFrom_WhenCollectionOnlyContainsExcludes_ThrowsIllegalArgumentException() {
     Collection<String> collection = Lists.newArrayList("1", "2", "2", "3");
     try {
-      randomFrom(collection, "1", "2", "3");
+      IterableUtils.randomFrom(collection, "1", "2", "3");
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Iterable only consists of the given excludes"));
@@ -53,13 +52,13 @@ public class IterableUtilsTest {
   @Test
   public void randomFrom_WithExcludes_ReturnsElementFromCollectionNotInExcludes() {
     Collection<String> collection = Lists.newArrayList("1", "2", "2", "3");
-    assertThat(randomFrom(collection, "1", "2"), is("3"));
+    assertThat(IterableUtils.randomFrom(collection, "1", "2"), is("3"));
   }
 
   @Test
   public void randomFrom_WithExcludes_WorksWithImmutableCollection() {
     Collection<String> immutableCollection =
         ImmutableList.<String>builder().add("1").add("2").build();
-    assertThat(randomFrom(immutableCollection, "1"), is("2"));
+    assertThat(IterableUtils.randomFrom(immutableCollection, "1"), is("2"));
   }
 }
