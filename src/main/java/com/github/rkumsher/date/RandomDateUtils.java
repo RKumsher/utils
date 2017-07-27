@@ -47,10 +47,10 @@ public final class RandomDateUtils {
   private static final ZoneId UTC = ZoneId.of("UTC").normalized();
   private static final ZoneOffset UTC_OFFSET = ZoneOffset.UTC;
   private static final int LEAP_YEAR = 2004;
-  private static final MonthDay LEAP_DAY = MonthDay.of(FEBRUARY, 29);
   private static final int MAX_ZONE_OFFSET_SECONDS = 64800;
   private static final int MIN_YEAR = 1970;
   private static final int MAX_YEAR = 9999;
+  static final MonthDay LEAP_DAY = MonthDay.of(FEBRUARY, 29);
   /**
    * 1970-01-01T00:00:00Z.
    */

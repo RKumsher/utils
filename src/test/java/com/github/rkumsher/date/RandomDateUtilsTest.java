@@ -1,5 +1,6 @@
 package com.github.rkumsher.date;
 
+import static com.github.rkumsher.date.RandomDateUtils.LEAP_DAY;
 import static com.github.rkumsher.date.RandomDateUtils.MAX_INSTANT;
 import static com.github.rkumsher.date.RandomDateUtils.MIN_INSTANT;
 import static com.github.rkumsher.date.RandomDateUtils.isLeapDay;
@@ -1086,6 +1087,17 @@ public class RandomDateUtilsTest {
   }
 
   @Test
+  public void randomAfter_WithAfterLessThanMinValue_ThrowsIllegalArgumentException() {
+    ChronoField field = RandomEnumUtils.random(ChronoField.class);
+    try {
+      randomAfter(field, field.range().getMinimum() - 1);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("After must be on or after " + field.range().getMinimum()));
+    }
+  }
+
+  @Test
   public void randomBefore_ReturnsValueBeforeGiven() {
     ChronoField field = RandomEnumUtils.random(ChronoField.class);
     long before = randomAfter(field, field.range().getMinimum());
@@ -1100,6 +1112,17 @@ public class RandomDateUtilsTest {
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Before must be after " + field.range().getMinimum()));
+    }
+  }
+
+  @Test
+  public void randomBefore_WithBeforeGreaterThanMaxValue_ThrowsIllegalArgumentException() {
+    ChronoField field = RandomEnumUtils.random(ChronoField.class);
+    try {
+      randomBefore(field, field.range().getMaximum() + 1);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Before must be on or before " + field.range().getMaximum()));
     }
   }
 
@@ -1156,6 +1179,20 @@ public class RandomDateUtilsTest {
   public void randomMonthDay_WithEqualMonthDays_ReturnsStartMonthDay() {
     MonthDay monthDay = MonthDay.now(CLOCK);
     assertThat(randomMonthDay(monthDay, monthDay), is(monthDay));
+  }
+
+  @Test
+  public void randomMonthDay_WithBothLeapDayAndIncludeLeapDay_ReturnsLeapDay() {
+    assertThat(randomMonthDay(LEAP_DAY, LEAP_DAY, true), is(LEAP_DAY));
+  }
+
+  @Test
+  public void randomMonthDay_WithBothLeapDayAndNotIncludeLeapDay_ThrowsIllegalArgumentException() {
+    try {
+      randomMonthDay(LEAP_DAY, LEAP_DAY, false);
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage(), is("Start and End can't both be leap day"));
+    }
   }
 
   @Test
