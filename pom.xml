@@ -42,6 +42,10 @@
       <timezone>America/New_York</timezone>
     </developer>
   </developers>
+  <ciManagement>
+    <system>Travis CI</system>
+    <url>https://travis-ci.org/RKumsher/utils</url>
+  </ciManagement>
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>
