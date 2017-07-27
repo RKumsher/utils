@@ -13,6 +13,35 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/rkumsher/utils/issues</url>
+  </issueManagement>
+  <inceptionYear>2017</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:https://github.com/rkumsher/utils.git</connection>
+    <developerConnection>scm:git:git@github.com:rkumsher/utils.git</developerConnection>
+    <url>https://github.com/rkumsher/utils</url>
+  </scm>
+  <developers>
+    <developer>
+      <id>RKumsher</id>
+      <name>Ryan Kumsher</name>
+      <email>RKumsher@gmail.com</email>
+      <roles>
+        <role>owner</role>
+        <role>developer</role>
+      </roles>
+      <timezone>America/New_York</timezone>
+    </developer>
+  </developers>
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>
