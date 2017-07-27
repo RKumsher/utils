@@ -61,4 +61,15 @@ public class IterableUtilsTest {
         ImmutableList.<String>builder().add("1").add("2").build();
     assertThat(IterableUtils.randomFrom(immutableCollection, "1"), is("2"));
   }
+
+  @Test
+  public void randomFrom_WithExcludesAndEmptyCollection_ThrowsIllegalArgumentException() {
+    try {
+      String[] excludes = { "1", "2" };
+      IterableUtils.randomFrom(Collections.emptyList(), excludes);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Iterable cannot be empty"));
+    }
+  }
 }
