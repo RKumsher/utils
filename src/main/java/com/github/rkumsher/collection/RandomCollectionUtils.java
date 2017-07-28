@@ -23,6 +23,7 @@ public final class RandomCollectionUtils {
    *
    * @param elements elements to randomly fill list from
    * @param size range that the size of the collection will be randomly chosen from
+   * @param <T> the type of elements in the given iterable
    * @return list filled randomly from the given elements
    * @throws IllegalArgumentException if the elements to fill list from is empty or if the size
    *     range contains negative integers
@@ -37,6 +38,7 @@ public final class RandomCollectionUtils {
    *
    * @param elements elements to randomly fill list from
    * @param size of the random collection to return
+   * @param <T> the type of elements in the given iterable
    * @return list filled randomly from the given elements
    * @throws IllegalArgumentException if the elements to fill list from is empty or if the size is
    *     negative
@@ -51,6 +53,7 @@ public final class RandomCollectionUtils {
    *
    * @param elementSupplier element supplier to fill list from
    * @param size range that the size of the collection will be randomly chosen from
+   * @param <T> the type of element the given supplier returns
    * @return list filled from the given elements
    * @throws IllegalArgumentException if the size range contains negative integers
    */
@@ -68,6 +71,7 @@ public final class RandomCollectionUtils {
    *
    * @param elementSupplier element supplier to fill list from
    * @param size of the random collection to return
+   * @param <T> the type of element the given supplier returns
    * @return list filled from the given elements
    * @throws IllegalArgumentException if the size is negative
    */

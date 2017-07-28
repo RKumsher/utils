@@ -20,6 +20,7 @@ public final class IterableUtils {
    * Returns a random element from the given {@link Iterable}.
    *
    * @param iterable {@link Iterable} to return random element from
+   * @param <T> the type of elements in the given iterable
    * @return random element from the given {@link Iterable}
    * @throws IllegalArgumentException if the iterable is empty
    */
@@ -34,6 +35,7 @@ public final class IterableUtils {
    *
    * @param iterable {@link Iterable} to return random element from
    * @param excludes values to exclude
+   * @param <T> the type of elements in the given iterable
    * @return random element from the given {@link Iterable} that's not in the values to exclude
    * @throws IllegalArgumentException if the iterable is empty
    */
@@ -46,6 +48,7 @@ public final class IterableUtils {
    *
    * @param iterable {@link Iterable} to return random element from
    * @param excludes values to exclude
+   * @param <T> the type of elements in the given iterable
    * @return random element from the given {@link Iterable} that's not in the values to exclude
    * @throws IllegalArgumentException if the iterable is empty
    */

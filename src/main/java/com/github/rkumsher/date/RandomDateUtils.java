@@ -913,7 +913,8 @@ public final class RandomDateUtils {
    *
    * @param after the value that returned {@link Year} must be after
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if after is null or if after >= {@link RandomDateUtils#MAX_INSTANT}
+   * @throws IllegalArgumentException if after is null or if after greater than or equal to
+   * {@link RandomDateUtils#MAX_INSTANT}
    */
   public static Year randomYearAfter(Year after) {
     checkArgument(after != null, "After must be non-null");
@@ -925,7 +926,7 @@ public final class RandomDateUtils {
    *
    * @param after the value that returned {@link Year} must be after
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if after >= {@link RandomDateUtils#MAX_INSTANT}
+   * @throws IllegalArgumentException if after greater than or equal to {@link RandomDateUtils#MAX_INSTANT}
    */
   public static Year randomYearAfter(int after) {
     checkArgument(after < MAX_YEAR, "After must be before %s", MAX_YEAR);
@@ -946,7 +947,8 @@ public final class RandomDateUtils {
    *
    * @param before the value that returned {@link Year} must be before
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if before is null or if before is <= {@link RandomDateUtils#MIN_INSTANT}
+   * @throws IllegalArgumentException if before is null or if before is less than or equal to
+   * {@link RandomDateUtils#MIN_INSTANT}
    */
   public static Year randomYearBefore(Year before) {
     checkArgument(before != null, "Before must be non-null");
@@ -958,7 +960,7 @@ public final class RandomDateUtils {
    *
    * @param before the value that returned {@link Year} must be before
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if before is <= 1,000
+   * @throws IllegalArgumentException if before is less than or equal to 1970
    */
   public static Year randomYearBefore(int before) {
     checkArgument(before > MIN_YEAR, "Before must be after %s", MIN_YEAR);

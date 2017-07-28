@@ -14,6 +14,7 @@ public final class RandomEnumUtils {
    * Returns a random element from the given enum class.
    *
    * @param enumClass enum class to return random element from
+   * @param <T> the type of the given enum class
    * @return random element from the given enum class
    * @throws IllegalArgumentException if the given enumClass has no values
    */
@@ -27,6 +28,7 @@ public final class RandomEnumUtils {
    *
    * @param enumClass enum class to return random element from
    * @param excludes values to exclude
+   * @param <T> the type of the given enum class
    * @return random element from the given enum class that's not in the values to exclude.
    * @throws IllegalArgumentException if the given enumClass has no values
    */
@@ -40,6 +42,7 @@ public final class RandomEnumUtils {
    *
    * @param enumClass enum class to return random element from
    * @param excludes values to exclude
+   * @param <T> the type of the given enum class
    * @return random element from the given enum class that's not in the values to exclude.
    * @throws IllegalArgumentException if the given enumClass has no values
    */
