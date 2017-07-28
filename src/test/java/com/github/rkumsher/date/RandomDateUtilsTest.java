@@ -1117,7 +1117,7 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomBefore_WithBeforeGreaterThanMaxValue_ThrowsIllegalArgumentException() {
-    ChronoField field = RandomEnumUtils.random(ChronoField.class);
+    ChronoField field = SECOND_OF_MINUTE;
     try {
       randomBefore(field, field.range().getMaximum() + 1);
       fail("Should have thrown an IllegalArgumentException");
