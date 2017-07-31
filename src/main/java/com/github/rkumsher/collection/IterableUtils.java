@@ -39,6 +39,7 @@ public final class IterableUtils {
    * @return random element from the given {@link Iterable} that's not in the values to exclude
    * @throws IllegalArgumentException if the iterable is empty
    */
+  @SafeVarargs
   public static <T> T randomFrom(Iterable<T> iterable, T... excludes) {
     return randomFrom(iterable, Arrays.asList(excludes));
   }

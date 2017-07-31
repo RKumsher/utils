@@ -32,6 +32,7 @@ public final class RandomEnumUtils {
    * @return random element from the given enum class that's not in the values to exclude.
    * @throws IllegalArgumentException if the given enumClass has no values
    */
+  @SafeVarargs
   public static <T extends Enum<T>> T random(Class<T> enumClass, T... excludes) {
     EnumSet<T> enums = EnumSet.allOf(enumClass);
     return IterableUtils.randomFrom(enums, excludes);
