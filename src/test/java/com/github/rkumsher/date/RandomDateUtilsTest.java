@@ -270,9 +270,9 @@ public class RandomDateUtilsTest {
     OffsetDateTime start = OffsetDateTime.now(CLOCK).minus(1, DAYS);
     OffsetDateTime end = OffsetDateTime.now(CLOCK).plus(1, DAYS);
 
-    OffsetDateTime OffsetDateTime = randomOffsetDateTime(start, end);
-    assertTrue(OffsetDateTime.isAfter(start) || OffsetDateTime.equals(start));
-    assertTrue(OffsetDateTime.isBefore(end));
+    OffsetDateTime offsetDateTime = randomOffsetDateTime(start, end);
+    assertTrue(offsetDateTime.isAfter(start) || offsetDateTime.equals(start));
+    assertTrue(offsetDateTime.isBefore(end));
   }
 
   @Test
@@ -284,8 +284,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomOffsetDateTime_WithEqualOffsetDateTimes_ReturnsStartOffsetDateTime() {
-    OffsetDateTime OffsetDateTime = ZonedDateTime.now(CLOCK).toOffsetDateTime();
-    assertThat(randomOffsetDateTime(OffsetDateTime, OffsetDateTime), is(OffsetDateTime));
+    OffsetDateTime offsetDateTime = ZonedDateTime.now(CLOCK).toOffsetDateTime();
+    assertThat(randomOffsetDateTime(offsetDateTime, offsetDateTime), is(offsetDateTime));
   }
 
   @Test

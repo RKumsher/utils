@@ -1,6 +1,7 @@
 package com.github.rkumsher.enums;
 
 import static com.github.rkumsher.enums.RandomEnumUtils.random;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.*;
@@ -28,7 +29,7 @@ public class RandomEnumUtilsTest {
       random(EmptyEnum.class);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      // Expected
+      assertThat(ex.getMessage(), is("Iterable cannot be empty"));
     }
   }
 
@@ -62,7 +63,7 @@ public class RandomEnumUtilsTest {
       random(SingletonEnum.class, SingletonEnum.ONLY_ELEMENT);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      // Expected
+      assertThat(ex.getMessage(), is("Iterable only consists of the given excludes"));
     }
   }
 }

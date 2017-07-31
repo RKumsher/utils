@@ -895,7 +895,7 @@ public final class RandomDateUtils {
   public static Year randomYear(int startInclusive, int endExclusive) {
     checkArgument(startInclusive < MAX_YEAR, "Start must before %s", MAX_YEAR);
     checkArgument(endExclusive > MIN_YEAR, "End must be after %s", MIN_YEAR);
-    checkArgument(!(startInclusive > endExclusive), "End must come on or after start");
+    checkArgument(startInclusive <= endExclusive, "End must come on or after start");
     return Year.of(RandomUtils.nextInt(startInclusive, endExclusive));
   }
 
@@ -1019,7 +1019,7 @@ public final class RandomDateUtils {
    */
   public static ZoneOffset randomZoneOffset() {
     int totalSeconds =
-        MAX_ZONE_OFFSET_SECONDS - RandomUtils.nextInt(0, (MAX_ZONE_OFFSET_SECONDS * 2) + 1);
+        MAX_ZONE_OFFSET_SECONDS - RandomUtils.nextInt(0, MAX_ZONE_OFFSET_SECONDS * 2 + 1);
     return ZoneOffset.ofTotalSeconds(totalSeconds);
   }
 
