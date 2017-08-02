@@ -65,7 +65,7 @@ public class IterableUtilsTest {
   @Test
   public void randomFrom_WithExcludesAndEmptyCollection_ThrowsIllegalArgumentException() {
     try {
-      String[] excludes = { "1", "2" };
+      String[] excludes = {"1", "2"};
       IterableUtils.randomFrom(Collections.emptyList(), excludes);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {

@@ -51,15 +51,12 @@ public final class RandomDateUtils {
   private static final int MIN_YEAR = 1970;
   private static final int MAX_YEAR = 9999;
   static final MonthDay LEAP_DAY = MonthDay.of(FEBRUARY, 29);
-  /**
-   * 1970-01-01T00:00:00Z.
-   */
+  /** 1970-01-01T00:00:00Z. */
   static final Instant MIN_INSTANT = Instant.ofEpochMilli(0);
-  /**
-   * December 31st, 9999.
-   */
+  /** December 31st, 9999. */
   static final Instant MAX_INSTANT =
-      Instant.ofEpochMilli(LocalDate.of(MAX_YEAR, 12, 31).atStartOfDay(UTC).toInstant().toEpochMilli());
+      Instant.ofEpochMilli(
+          LocalDate.of(MAX_YEAR, 12, 31).atStartOfDay(UTC).toInstant().toEpochMilli());
 
   private RandomDateUtils() {}
 
@@ -874,8 +871,8 @@ public final class RandomDateUtils {
    * @param endExclusive the upper bound (not included)
    * @return the random {@link Year}
    * @throws IllegalArgumentException if startInclusive or endExclusive are null, if endExclusive is
-   *     earlier than startInclusive, if either are before {@link RandomDateUtils#MIN_INSTANT}, or if either are
-   *     after {@link RandomDateUtils#MAX_INSTANT}
+   *     earlier than startInclusive, if either are before {@link RandomDateUtils#MIN_INSTANT}, or
+   *     if either are after {@link RandomDateUtils#MAX_INSTANT}
    */
   public static Year randomYear(Year startInclusive, Year endExclusive) {
     checkArgument(startInclusive != null, "Start must be non-null");
@@ -890,7 +887,8 @@ public final class RandomDateUtils {
    * @param endExclusive the upper bound (not included)
    * @return the random {@link Year}
    * @throws IllegalArgumentException if endExclusive is earlier than startInclusive, if end is
-   *     before {@link RandomDateUtils#MIN_INSTANT}, or if start is after {@link RandomDateUtils#MAX_INSTANT}
+   *     before {@link RandomDateUtils#MIN_INSTANT}, or if start is after {@link
+   *     RandomDateUtils#MAX_INSTANT}
    */
   public static Year randomYear(int startInclusive, int endExclusive) {
     checkArgument(startInclusive < MAX_YEAR, "Start must before %s", MAX_YEAR);
@@ -913,8 +911,8 @@ public final class RandomDateUtils {
    *
    * @param after the value that returned {@link Year} must be after
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if after is null or if after greater than or equal to
-   * {@link RandomDateUtils#MAX_INSTANT}
+   * @throws IllegalArgumentException if after is null or if after greater than or equal to {@link
+   *     RandomDateUtils#MAX_INSTANT}
    */
   public static Year randomYearAfter(Year after) {
     checkArgument(after != null, "After must be non-null");
@@ -926,7 +924,8 @@ public final class RandomDateUtils {
    *
    * @param after the value that returned {@link Year} must be after
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if after greater than or equal to {@link RandomDateUtils#MAX_INSTANT}
+   * @throws IllegalArgumentException if after greater than or equal to {@link
+   *     RandomDateUtils#MAX_INSTANT}
    */
   public static Year randomYearAfter(int after) {
     checkArgument(after < MAX_YEAR, "After must be before %s", MAX_YEAR);
@@ -947,8 +946,8 @@ public final class RandomDateUtils {
    *
    * @param before the value that returned {@link Year} must be before
    * @return the random {@link Year}
-   * @throws IllegalArgumentException if before is null or if before is less than or equal to
-   * {@link RandomDateUtils#MIN_INSTANT}
+   * @throws IllegalArgumentException if before is null or if before is less than or equal to {@link
+   *     RandomDateUtils#MIN_INSTANT}
    */
   public static Year randomYearBefore(Year before) {
     checkArgument(before != null, "Before must be non-null");
