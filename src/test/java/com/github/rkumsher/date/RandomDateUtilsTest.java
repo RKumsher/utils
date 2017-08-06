@@ -1108,7 +1108,7 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomAfter_WithAfterLessThanMinValue_ThrowsIllegalArgumentException() {
-    ChronoField field = RandomEnumUtils.random(ChronoField.class);
+    ChronoField field = SECOND_OF_MINUTE;
     try {
       randomAfter(field, field.range().getMinimum() - 1);
       fail("Should have thrown an IllegalArgumentException");
