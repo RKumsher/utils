@@ -451,7 +451,15 @@ public final class RandomDateUtils {
   public static Instant randomInstant(Instant startInclusive, Instant endExclusive) {
     checkArgument(startInclusive != null, "Start must be non-null");
     checkArgument(endExclusive != null, "End must be non-null");
-    checkArgument(!startInclusive.isAfter(endExclusive), "End must come on or after start");
+    checkArgument(!startInclusive.isAfter(endExclusive), "End must be on or after start");
+    checkArgument(
+        startInclusive.equals(MIN_INSTANT) || startInclusive.isAfter(MIN_INSTANT),
+        "Start must be on or after %s",
+        MIN_INSTANT);
+    checkArgument(
+        endExclusive.equals(MAX_INSTANT) || endExclusive.isBefore(MAX_INSTANT),
+        "End must be on or before %s",
+        MAX_INSTANT);
     return Instant.ofEpochMilli(
         RandomUtils.nextLong(startInclusive.toEpochMilli(), endExclusive.toEpochMilli()));
   }
@@ -589,7 +597,7 @@ public final class RandomDateUtils {
     long max = field.range().getMaximum();
     checkArgument(startInclusive >= min, "Start must be on or after %s", min);
     checkArgument(endExclusive <= max, "End must be on or before %s", max);
-    checkArgument(startInclusive <= endExclusive, "End must come on or after start");
+    checkArgument(startInclusive <= endExclusive, "End must be on or after start");
     min = Math.max(startInclusive, field.range().getMinimum());
     max = Math.min(endExclusive, field.range().getMaximum());
     return randomLong(min, max);
@@ -891,9 +899,11 @@ public final class RandomDateUtils {
    *     RandomDateUtils#MAX_INSTANT}
    */
   public static Year randomYear(int startInclusive, int endExclusive) {
-    checkArgument(startInclusive < MAX_YEAR, "Start must before %s", MAX_YEAR);
+    checkArgument(startInclusive < MAX_YEAR, "Start must be before %s", MAX_YEAR);
+    checkArgument(startInclusive >= MIN_YEAR, "Start must be on or after %s", MIN_YEAR);
     checkArgument(endExclusive > MIN_YEAR, "End must be after %s", MIN_YEAR);
-    checkArgument(startInclusive <= endExclusive, "End must come on or after start");
+    checkArgument(endExclusive <= MAX_YEAR, "End must be on or before %s", MAX_YEAR);
+    checkArgument(startInclusive <= endExclusive, "End must be on or after start");
     return Year.of(RandomUtils.nextInt(startInclusive, endExclusive));
   }
 

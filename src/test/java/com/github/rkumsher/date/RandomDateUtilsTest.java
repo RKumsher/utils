@@ -123,8 +123,8 @@ public class RandomDateUtilsTest {
   private static final MonthDay MAX_MONTH_DAY = MonthDay.of(DECEMBER, 31);
   private static final Year MAX_YEAR = Year.of(9999);
   private static final Year MIN_YEAR = Year.of(1970);
-  private static final YearMonth MAX_YEAR_MONTH = YearMonth.of(9999, DECEMBER);
-  private static final YearMonth MIN_YEAR_MONTH = YearMonth.of(1970, JANUARY);
+  private static final YearMonth MAX_YEAR_MONTH = YearMonth.of(MAX_YEAR.getValue(), DECEMBER);
+  private static final YearMonth MIN_YEAR_MONTH = YearMonth.of(MIN_YEAR.getValue(), JANUARY);
   private static final Date MIN_DATE = Date.from(MIN_INSTANT);
   private static final Date MAX_DATE = Date.from(MAX_INSTANT);
 
@@ -188,7 +188,7 @@ public class RandomDateUtilsTest {
       randomZonedDateTime(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
@@ -317,7 +317,7 @@ public class RandomDateUtilsTest {
       randomOffsetDateTime(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
@@ -445,7 +445,7 @@ public class RandomDateUtilsTest {
       randomLocalDateTime(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
@@ -571,7 +571,7 @@ public class RandomDateUtilsTest {
       randomLocalDate(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
@@ -697,7 +697,7 @@ public class RandomDateUtilsTest {
       randomDate(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
@@ -823,7 +823,29 @@ public class RandomDateUtilsTest {
       randomInstant(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
+    }
+  }
+
+  @Test
+  public void randomInstant_WithStartBeforeMin_ThrowsIllegalArgumentException() {
+    Instant start = MIN_INSTANT.minus(1, MILLIS);
+    try {
+      randomInstant(start, MAX_INSTANT);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be on or after " + MIN_INSTANT));
+    }
+  }
+
+  @Test
+  public void randomInstant_WithEndAfterMax_ThrowsIllegalArgumentException() {
+    Instant end = MAX_INSTANT.plus(1, MILLIS);
+    try {
+      randomInstant(MIN_INSTANT, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be on or before " + MAX_INSTANT));
     }
   }
 
@@ -947,7 +969,7 @@ public class RandomDateUtilsTest {
       randomLocalTime(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
@@ -1040,16 +1062,15 @@ public class RandomDateUtilsTest {
       random(SECOND_OF_MINUTE, 2, 1);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException e) {
-      assertThat(e.getMessage(), is("End must come on or after start"));
+      assertThat(e.getMessage(), is("End must be on or after start"));
     }
   }
 
   @Test
   public void random_WithStartBeforeMin_ThrowsIllegalArgumentException() {
     long start = SECOND_OF_MINUTE.range().getMinimum() - 1;
-    long end = 2;
     try {
-      random(SECOND_OF_MINUTE, start, end);
+      random(SECOND_OF_MINUTE, start, SECOND_OF_MINUTE.range().getMaximum());
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Start must be on or after 0"));
@@ -1058,10 +1079,9 @@ public class RandomDateUtilsTest {
 
   @Test
   public void random_WithEndAfterMax_ThrowsIllegalArgumentException() {
-    long start = 1;
     long end = SECOND_OF_MINUTE.range().getMaximum() + 1;
     try {
-      random(SECOND_OF_MINUTE, start, end);
+      random(SECOND_OF_MINUTE, SECOND_OF_MINUTE.range().getMinimum(), end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("End must be on or before 59"));
@@ -1224,7 +1244,7 @@ public class RandomDateUtilsTest {
       randomMonthDay(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
@@ -1283,8 +1303,8 @@ public class RandomDateUtilsTest {
   @Test
   public void randomYearMonth_ReturnsYearMonthWithYear() {
     YearMonth yearMonth = randomYearMonth();
-    assertThat(yearMonth.getYear() >= 1_000, is(true));
-    assertThat(yearMonth.getYear() < 10_000, is(true));
+    assertThat(yearMonth.getYear() >= MIN_YEAR.getValue(), is(true));
+    assertThat(yearMonth.getYear() <= MAX_YEAR.getValue(), is(true));
   }
 
   @Test
@@ -1337,7 +1357,7 @@ public class RandomDateUtilsTest {
       randomYearMonth(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
@@ -1408,8 +1428,8 @@ public class RandomDateUtilsTest {
   @Test
   public void randomYear_ReturnsRandomYear() {
     Year year = randomYear();
-    assertTrue(year.isAfter(Year.of(999)));
-    assertTrue(year.isBefore(Year.of(10_000)));
+    assertTrue(year.equals(MIN_YEAR) || year.isAfter(MIN_YEAR));
+    assertTrue(year.equals(MAX_YEAR) || year.isBefore(MAX_YEAR));
   }
 
   @Test
@@ -1463,31 +1483,51 @@ public class RandomDateUtilsTest {
       randomYear(start, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must come on or after start"));
+      assertThat(ex.getMessage(), is("End must be on or after start"));
     }
   }
 
   @Test
   public void randomYear_WithStartAfterMaxYear_ThrowsIllegalArgumentException() {
-    Year start = Year.of(10_000);
-    Year end = start.plus(1, YEARS);
+    Year start = MAX_YEAR.plus(1, YEARS);
     try {
-      randomYear(start, end);
+      randomYear(start, MAX_YEAR);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("Start must before 9999"));
+      assertThat(ex.getMessage(), is("Start must be before " + MAX_YEAR));
     }
   }
 
   @Test
   public void randomYear_WithEndBeforeMinYear_ThrowsIllegalArgumentException() {
-    Year start = Year.of(998);
-    Year end = Year.of(999);
+    Year end = MIN_YEAR.minus(1, YEARS);
     try {
-      randomYear(start, end);
+      randomYear(MIN_YEAR, end);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("End must be after 1970"));
+      assertThat(ex.getMessage(), is("End must be after " + MIN_YEAR));
+    }
+  }
+
+  @Test
+  public void randomYear_WithStartBeforeMinYear_ThrowsIllegalArgumentException() {
+    Year start = MIN_YEAR.minus(1, YEARS);
+    try {
+      randomYear(start, MAX_YEAR);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Start must be on or after " + MIN_YEAR));
+    }
+  }
+
+  @Test
+  public void randomYear_WithMaxAfterMaxYear_ThrowsIllegalArgumentException() {
+    Year end = MAX_YEAR.plus(1, YEARS);
+    try {
+      randomYear(MIN_YEAR, end);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("End must be on or before " + MAX_YEAR));
     }
   }
 
@@ -1503,7 +1543,7 @@ public class RandomDateUtilsTest {
       randomYearAfter(MAX_YEAR);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("After must be before 9999"));
+      assertThat(ex.getMessage(), is("After must be before " + MAX_YEAR));
     }
   }
 
@@ -1535,7 +1575,7 @@ public class RandomDateUtilsTest {
       randomYearBefore(MIN_YEAR);
       fail("Should have thrown an IllegalArgumentException");
     } catch (IllegalArgumentException ex) {
-      assertThat(ex.getMessage(), is("Before must be after 1970"));
+      assertThat(ex.getMessage(), is("Before must be after " + MIN_YEAR));
     }
   }
 
