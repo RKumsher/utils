@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
+import java.util.stream.StreamSupport;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -55,9 +56,50 @@ public final class IterableUtils {
    */
   public static <T> T randomFrom(Iterable<T> iterable, Collection<T> excludes) {
     checkArgument(!Iterables.isEmpty(iterable), "Iterable cannot be empty");
+    checkArgument(!containsAll(excludes, iterable), "Iterable only consists of the given excludes");
     Iterable<T> copy = Lists.newArrayList(iterable);
     Iterables.removeAll(copy, excludes);
-    checkArgument(!Iterables.isEmpty(copy), "Iterable only consists of the given excludes");
     return randomFrom(copy);
+  }
+
+  /**
+   * Returns whether or not the given {@link Iterable} contains all the given elements to check for.
+   *
+   * <pre>
+   *   IterableUtils.containsAll(Collections.emptyList()) = true;
+   *   IterableUtils.containsAll(Lists.newArrayList("a"), "a") = true;
+   *   IterableUtils.containsAll(Lists.newArrayList("a"), "b") = false;
+   *   IterableUtils.containsAll(Lists.newArrayList("a", "b"), "a", "b", "a", "b") = true;
+   * </pre>
+   *
+   * @param iterableToCheck {@link Iterable} to to check
+   * @param elementsToCheckFor elements to check for
+   * @param <T> the type of elements in the given iterables
+   * @return whether or not the given {@link Iterable} contains all the given elements to check for.
+   */
+  @SafeVarargs
+  public static <T> boolean containsAll(Iterable<T> iterableToCheck, T... elementsToCheckFor) {
+    return containsAll(iterableToCheck, Arrays.asList(elementsToCheckFor));
+  }
+
+  /**
+   * Returns whether or not the given {@link Iterable} contains all the given elements to check for.
+   *
+   * <pre>
+   *   IterableUtils.containsAll(Collections.emptyList(), Collections.emptyList()) = true;
+   *   IterableUtils.containsAll(Lists.newArrayList("a"), Lists.newArrayList("a")) = true;
+   *   IterableUtils.containsAll(Lists.newArrayList("a"), Lists.newArrayList("b")) = false;
+   *   IterableUtils.containsAll(Lists.newArrayList("a", "b"), Lists.newArrayList("a", "b", "a", "b")) = true;
+   * </pre>
+   *
+   * @param iterableToCheck {@link Iterable} to to check
+   * @param elementsToCheckFor elements to check for
+   * @param <T> the type of elements in the given iterables
+   * @return whether or not the given {@link Iterable} contains all the given elements to check for.
+   */
+  public static <T> boolean containsAll(
+      Iterable<T> iterableToCheck, Iterable<T> elementsToCheckFor) {
+    return StreamSupport.stream(elementsToCheckFor.spliterator(), false)
+        .allMatch(element -> Iterables.contains(iterableToCheck, element));
   }
 }

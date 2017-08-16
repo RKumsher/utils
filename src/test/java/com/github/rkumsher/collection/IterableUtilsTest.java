@@ -1,5 +1,6 @@
 package com.github.rkumsher.collection;
 
+import static com.github.rkumsher.collection.IterableUtils.containsAll;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.sameInstance;
@@ -71,5 +72,35 @@ public class IterableUtilsTest {
     } catch (IllegalArgumentException ex) {
       assertThat(ex.getMessage(), is("Iterable cannot be empty"));
     }
+  }
+
+  @Test
+  public void containsAll_WhenElementsToCheckForIsEmpty_ReturnsTrue() {
+    assertThat(containsAll(Collections.emptyList(), Collections.emptyList()), is(true));
+  }
+
+  @Test
+  public void containsAll_WhenIterablesAreSame_ReturnsTrue() {
+    Iterable<String> iterable = Lists.newArrayList();
+    assertThat(containsAll(iterable, iterable), is(true));
+  }
+
+  @Test
+  public void containsAll_WhenIterablesEqual_ReturnsTrue() {
+    Iterable<String> iterableToCheck = Lists.newArrayList("a");
+    Iterable<String> elementsToCheckFor = Lists.newArrayList("a");
+    assertThat(containsAll(iterableToCheck, elementsToCheckFor), is(true));
+  }
+
+  @Test
+  public void containsAll_WhenIterableToCheckDoesNotContainElement_ReturnsFalse() {
+    Iterable<String> iterableToCheck = Lists.newArrayList("a");
+    assertThat(containsAll(iterableToCheck, "b"), is(false));
+  }
+
+  @Test
+  public void containsAll_WhenIterableToCheckContainsAllElements_ReturnsTrue() {
+    Iterable<String> iterableToCheck = Lists.newArrayList("a", "b");
+    assertThat(containsAll(iterableToCheck, "a", "b", "a", "b"), is(true));
   }
 }
