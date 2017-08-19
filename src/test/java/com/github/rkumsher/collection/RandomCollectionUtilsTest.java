@@ -103,6 +103,12 @@ public class RandomCollectionUtilsTest {
   }
 
   @Test
+  public void randomSetFrom_WithSupplier_ReturnsSetFilledFromSupplier() {
+    Set<Object> set = randomSetFrom(Object::new, 10);
+    assertThat(set, hasSize(10));
+  }
+
+  @Test
   public void randomListFrom_WithConstantSupplier_ReturnsListFilledWithConstant() {
     Object onlyElement = new Object();
     List<Object> list = randomListFrom(() -> onlyElement, Range.singleton(2));
