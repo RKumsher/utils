@@ -63,7 +63,17 @@ public class RandomCollectionUtilsTest {
   }
 
   @Test
-  public void randomListFrom_WithEmptyCollection_ThrowsIllegalArgumentException() {
+  public void randomListFrom_WithEmptyCollectionWithSize_ThrowsIllegalArgumentException() {
+    try {
+      randomListFrom(Collections.emptyList(), 2);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Elements to populate random list from must not be empty"));
+    }
+  }
+
+  @Test
+  public void randomListFrom_WithEmptyCollectionWithRange_ThrowsIllegalArgumentException() {
     try {
       randomListFrom(Collections.emptyList(), Range.singleton(2));
       fail("Should have thrown an IllegalArgumentException");
