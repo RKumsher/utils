@@ -62,7 +62,17 @@ public class RandomArrayUtilsTest {
   }
 
   @Test
-  public void randomArrayFrom_WithEmptyArray_ThrowsIllegalArgumentException() {
+  public void randomArrayFrom_WithEmptyArrayWithSize_ThrowsIllegalArgumentException() {
+    try {
+      randomArrayFrom(new Object[0], 2);
+      fail("Should have thrown an IllegalArgumentException");
+    } catch (IllegalArgumentException ex) {
+      assertThat(ex.getMessage(), is("Elements to populate random array from must not be empty"));
+    }
+  }
+
+  @Test
+  public void randomArrayFrom_WithEmptyArrayWithRange_ThrowsIllegalArgumentException() {
     try {
       randomArrayFrom(new Object[0], Range.singleton(2));
       fail("Should have thrown an IllegalArgumentException");
