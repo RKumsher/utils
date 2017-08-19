@@ -13,7 +13,7 @@ import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 
-/** Utility library to return random collections. */
+/** Utility library to generate random collections. */
 public final class RandomCollectionUtils {
 
   private RandomCollectionUtils() {}
