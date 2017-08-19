@@ -4,7 +4,8 @@
 
 Currently this library contains the following utility classes:
 - [IterableUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/collection/IterableUtils.java) - Utility library for working with Iterables
-- [RandomCollectionUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/collection/RandomCollectionUtils.java) - Utility library to return random collections
+- [RandomCollectionUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/collection/RandomCollectionUtils.java) - Utility library to generate random collections
+- [RandomArrayUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/collection/RandomArrayUtils.java) - Utility library to generate random arrays
 - [RandomDateUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/date/RandomDateUtils.java) - Utility library to return random dates, e.g., Instants, ZonedDateTimes, LocalDates, Dates, etc.
   - Currently supports java.util.Date and all the dates, times, instants, and durations from Java 8's [date and time API](https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html)
 - [RandomEnumUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/enums/RandomEnumUtils.java) - Utility library to retrieve random elements from enum instances
@@ -63,7 +64,7 @@ Alternatively you can pull it from the central Maven repositories:
 <dependency>
   <groupId>com.github.rkumsher</groupId>
   <artifactId>utils</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 </dependency>
 ```
 
