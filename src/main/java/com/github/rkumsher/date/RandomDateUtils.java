@@ -1081,7 +1081,7 @@ public final class RandomDateUtils {
   }
 
   /**
-   * Returns a random {@link Duration} which will positive.
+   * Returns a random {@link Duration} which will be positive.
    *
    * @return the random {@link Duration}
    */
