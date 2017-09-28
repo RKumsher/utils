@@ -1,5 +1,11 @@
 package com.github.rkumsher.date;
 
+import static com.github.rkumsher.number.RandomNumberUtils.randomInt;
+import static com.github.rkumsher.number.RandomNumberUtils.randomLong;
+import static com.github.rkumsher.number.RandomNumberUtils.randomNegativeInt;
+import static com.github.rkumsher.number.RandomNumberUtils.randomNegativeLong;
+import static com.github.rkumsher.number.RandomNumberUtils.randomPositiveInt;
+import static com.github.rkumsher.number.RandomNumberUtils.randomPositiveLong;
 import static com.google.common.base.Preconditions.*;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.FEBRUARY;
@@ -1059,18 +1065,6 @@ public final class RandomDateUtils {
     return Period.of(randomNegativeInt(), randomInt(), randomInt());
   }
 
-  private static int randomInt() {
-    return RandomUtils.nextInt() * (RandomUtils.nextBoolean() ? -1 : 1);
-  }
-
-  private static int randomPositiveInt() {
-    return RandomUtils.nextInt(1, Integer.MAX_VALUE);
-  }
-
-  private static int randomNegativeInt() {
-    return -RandomUtils.nextInt(1, Integer.MAX_VALUE);
-  }
-
   /**
    * Returns a random {@link Duration} which may be positive, negative, or {@link Duration#ZERO}.
    *
@@ -1096,24 +1090,5 @@ public final class RandomDateUtils {
    */
   public static Duration randomNegativeDuration() {
     return Duration.ofNanos(randomNegativeLong());
-  }
-
-  private static long randomLong() {
-    return RandomUtils.nextLong() * (RandomUtils.nextBoolean() ? -1 : 1);
-  }
-
-  private static long randomLong(long startInclusive, long endExclusive) {
-    if (startInclusive == endExclusive) {
-      return startInclusive;
-    }
-    return RANDOM.longs(1, startInclusive, endExclusive).sum();
-  }
-
-  private static long randomPositiveLong() {
-    return RandomUtils.nextLong(1, Long.MAX_VALUE);
-  }
-
-  private static long randomNegativeLong() {
-    return -RandomUtils.nextLong(1, Long.MAX_VALUE);
   }
 }
