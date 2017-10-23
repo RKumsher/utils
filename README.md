@@ -10,6 +10,8 @@ Currently this library contains the following utility classes:
   - Currently supports java.util.Date and all the dates, times, instants, and durations from Java 8's [date and time API](https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html)
 - [RandomEnumUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/enums/RandomEnumUtils.java) - Utility library to retrieve random elements from enum instances
 
+- [RandomNumberUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/number/RandomNumberUtils.java) - Utility library to return random numbers. Unlike Apaches RandomUtils, this supports negative numbers
+
 ## Example Usage
 ```java
 @Test
@@ -64,7 +66,7 @@ Alternatively you can pull it from the central Maven repositories:
 <dependency>
   <groupId>com.github.rkumsher</groupId>
   <artifactId>utils</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 ```
 
