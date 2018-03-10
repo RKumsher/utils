@@ -34,7 +34,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
 import java.util.Date;
-import java.util.Random;
 
 import org.apache.commons.lang3.RandomUtils;
 
@@ -49,7 +48,6 @@ import com.github.rkumsher.enums.RandomEnumUtils;
  */
 public final class RandomDateUtils {
 
-  private static final Random RANDOM = new Random();
   private static final ZoneId UTC = ZoneId.of("UTC").normalized();
   private static final ZoneOffset UTC_OFFSET = ZoneOffset.UTC;
   private static final int LEAP_YEAR = 2004;
