@@ -25,6 +25,9 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <prerequisites>
+    <maven>3.0.4</maven>
+  </prerequisites>
   <scm>
     <connection>scm:git:https://github.com/rkumsher/utils.git</connection>
     <developerConnection>scm:git:git@github.com:rkumsher/utils.git</developerConnection>
@@ -50,12 +53,12 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>23.0</version>
+      <version>24.0-jre</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.6</version>
+      <version>3.7</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -75,7 +78,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.9</version>
+        <version>0.8.0</version>
         <executions>
           <execution>
             <goals>
@@ -114,7 +117,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.4</version>
+            <version>3.0.0</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
