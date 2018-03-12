@@ -1,9 +1,8 @@
 package com.github.rkumsher.date;
 
-import static com.github.rkumsher.date.RandomDateUtils.LEAP_DAY;
+import static com.github.rkumsher.date.DateUtils.LEAP_DAY;
 import static com.github.rkumsher.date.RandomDateUtils.MAX_INSTANT;
 import static com.github.rkumsher.date.RandomDateUtils.MIN_INSTANT;
-import static com.github.rkumsher.date.RandomDateUtils.isLeapDay;
 import static com.github.rkumsher.date.RandomDateUtils.random;
 import static com.github.rkumsher.date.RandomDateUtils.randomAfter;
 import static com.github.rkumsher.date.RandomDateUtils.randomBefore;
@@ -66,7 +65,6 @@ import static com.github.rkumsher.date.RandomDateUtils.randomZonedDateTime;
 import static com.github.rkumsher.date.RandomDateUtils.randomZonedDateTimeAfter;
 import static com.github.rkumsher.date.RandomDateUtils.randomZonedDateTimeBefore;
 import static java.time.Month.DECEMBER;
-import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -75,6 +73,8 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.YEARS;
+import static org.apache.commons.lang3.time.DateUtils.addDays;
+import static org.apache.commons.lang3.time.DateUtils.addMilliseconds;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.hamcrest.Matchers.isOneOf;
@@ -100,7 +100,6 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalField;
 import java.util.Date;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 
 import com.github.rkumsher.enums.RandomEnumUtils;
@@ -648,8 +647,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomDate_ReturnsDateBetweenGivenDates() {
-    Date start = DateUtils.addDays(new Date(), -1);
-    Date end = DateUtils.addDays(new Date(), 1);
+    Date start = addDays(new Date(), -1);
+    Date end = addDays(new Date(), 1);
 
     Date zonedDateTime = randomDate(start, end);
     assertTrue(zonedDateTime.after(start) || zonedDateTime.equals(start));
@@ -659,7 +658,7 @@ public class RandomDateUtilsTest {
   @Test
   public void randomDate_WithDatesOneMillisecondApart_ReturnsStart() {
     Date start = new Date();
-    Date end = DateUtils.addMilliseconds(start, 1);
+    Date end = addMilliseconds(start, 1);
     assertThat(randomDate(start, end), is(start));
   }
 
@@ -691,8 +690,8 @@ public class RandomDateUtilsTest {
 
   @Test
   public void randomDate_WithStartAfterEndDate_ThrowsIllegalArgumentException() {
-    Date start = DateUtils.addDays(new Date(), 1);
-    Date end = DateUtils.addDays(new Date(), -1);
+    Date start = addDays(new Date(), 1);
+    Date end = addDays(new Date(), -1);
     try {
       randomDate(start, end);
       fail("Should have thrown an IllegalArgumentException");
@@ -1147,23 +1146,11 @@ public class RandomDateUtilsTest {
   }
 
   @Test
-  public void isLeapDay_WithFebruaryTwentyNinth_ReturnsTrue() {
-    MonthDay monthDay = MonthDay.of(FEBRUARY, 29);
-    assertThat(isLeapDay(monthDay), is(true));
-  }
-
-  @Test
-  public void isLeapDay_WithNotFebruaryTwentyNinth_ReturnsFalse() {
-    MonthDay monthDay = randomMonthDay(false);
-    assertThat(isLeapDay(monthDay), is(false));
-  }
-
-  @Test
   public void randomMonthDay_DoesNotReturnLeapDayIfCurrentYearIsNotLeapYear() {
     MonthDay monthDay = randomMonthDay();
     assertThat(monthDay, notNullValue());
     if (!Year.now().isLeap()) {
-      assertThat(monthDay, not(isLeapDay(monthDay)));
+      assertThat(monthDay, not(DateUtils.isLeapDay(monthDay)));
     }
   }
 

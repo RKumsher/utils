@@ -1,5 +1,6 @@
 package com.github.rkumsher.date;
 
+import static com.github.rkumsher.date.DateUtils.LEAP_DAY;
 import static com.github.rkumsher.number.RandomNumberUtils.randomInt;
 import static com.github.rkumsher.number.RandomNumberUtils.randomLong;
 import static com.github.rkumsher.number.RandomNumberUtils.randomNegativeInt;
@@ -8,7 +9,6 @@ import static com.github.rkumsher.number.RandomNumberUtils.randomPositiveInt;
 import static com.github.rkumsher.number.RandomNumberUtils.randomPositiveLong;
 import static com.google.common.base.Preconditions.*;
 import static java.time.Month.DECEMBER;
-import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
 import static java.time.temporal.ChronoField.NANO_OF_DAY;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -54,7 +54,6 @@ public final class RandomDateUtils {
   private static final int MAX_ZONE_OFFSET_SECONDS = 64800;
   private static final int MIN_YEAR = 1970;
   private static final int MAX_YEAR = 9999;
-  static final MonthDay LEAP_DAY = MonthDay.of(FEBRUARY, 29);
   /** 1970-01-01T00:00:00Z. */
   static final Instant MIN_INSTANT = Instant.ofEpochMilli(0);
   /** December 31st, 9999. */
@@ -672,19 +671,10 @@ public final class RandomDateUtils {
     Month month = randomMonth();
     int dayOfMonth = RandomUtils.nextInt(1, month.maxLength() + 1);
     MonthDay monthDay = MonthDay.of(month, dayOfMonth);
-    if (!includeLeapDay && isLeapDay(monthDay)) {
+    if (!includeLeapDay && DateUtils.isLeapDay(monthDay)) {
       return randomMonthDay(false);
     }
     return monthDay;
-  }
-
-  /**
-   * Returns whether or not the given {@link MonthDay} is leap day (February 29th).
-   *
-   * @return whether or not the given {@link MonthDay} is leap day
-   */
-  static boolean isLeapDay(MonthDay monthDay) {
-    return LEAP_DAY.equals(monthDay);
   }
 
   /**
