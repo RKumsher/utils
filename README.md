@@ -3,13 +3,15 @@
 [![Build Status](https://travis-ci.org/RKumsher/utils.svg?branch=master)](https://travis-ci.org/RKumsher/utils) [![codecov](https://codecov.io/gh/RKumsher/utils/branch/master/graph/badge.svg)](https://codecov.io/gh/RKumsher/utils) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Currently this library contains the following utility classes:
+- [ArrayUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/collection/ArrayUtils.java) - Utility library for working with Arrays
+- [DateUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/date/DateUtils.java) - Utility library for working with Dates
+- [EnumUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/enums/EnumUtils.java) - Utility library for working with Enums
 - [IterableUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/collection/IterableUtils.java) - Utility library for working with Iterables
 - [RandomCollectionUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/collection/RandomCollectionUtils.java) - Utility library to generate random collections
 - [RandomArrayUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/collection/RandomArrayUtils.java) - Utility library to generate random arrays
 - [RandomDateUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/date/RandomDateUtils.java) - Utility library to return random dates, e.g., Instants, ZonedDateTimes, LocalDates, Dates, etc.
   - Currently supports java.util.Date and all the dates, times, instants, and durations from Java 8's [date and time API](https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html)
 - [RandomEnumUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/enums/RandomEnumUtils.java) - Utility library to retrieve random elements from enum instances
-
 - [RandomNumberUtils](https://github.com/RKumsher/utils/blob/master/src/main/java/com/github/rkumsher/number/RandomNumberUtils.java) - Utility library to return random numbers. Unlike Apaches RandomUtils, this supports negative numbers
 
 ## Example Usage
